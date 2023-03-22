@@ -3,7 +3,7 @@ from marshmallow import fields
 from schemas.bases import RequestFoodBaseSchema
 
 
-class FoodResponseSchema(RequestFoodBaseSchema):
+class ResponseFoodSchema(RequestFoodBaseSchema):
     id = fields.Integer(required=True)
     calories_per_100g = fields.Float(required=True)
     created_on = fields.DateTime(required=True)

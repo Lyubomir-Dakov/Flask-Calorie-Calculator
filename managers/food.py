@@ -1,4 +1,5 @@
 from db import db
+from managers.auth import auth
 from models import FoodModel
 
 

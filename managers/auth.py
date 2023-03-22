@@ -5,6 +5,8 @@ from decouple import config
 from flask_httpauth import HTTPTokenAuth
 from werkzeug.exceptions import Unauthorized
 
+from models import UserModel, AdminModel
+
 
 class AuthManager:
     @staticmethod
@@ -20,7 +22,7 @@ class AuthManager:
     def decode_token(token):
         try:
             token = jwt.decode(jwt=token, key=config("SECRET_KEY"), algorithms=["HS256"])
-            return token
+            return token["sub"], token["type"]
         except Exception as ex:
             return ex
 
@@ -32,6 +34,9 @@ auth = HTTPTokenAuth(scheme="Bearer")
 def verify_token(token):
     try:
         user_id, type_user = AuthManager.decode_token(token)
-        return eval(f"{type_user}.query.filter_by(id={user_id}).first()")
+        user = AdminModel.query.filter_by(id=user_id).first()
+        if not user:
+            raise Unauthorized("Invalid or missing token")
+        return user
     except Exception as ex:
         raise Unauthorized("Invalid or missing token")

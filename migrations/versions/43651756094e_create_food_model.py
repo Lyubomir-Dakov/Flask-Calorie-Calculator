@@ -1,8 +1,8 @@
 """create food model
 
-Revision ID: dffe75996704
-Revises: 0c82f305ae70
-Create Date: 2023-03-13 06:13:38.002334
+Revision ID: 43651756094e
+Revises: 0b888744953d
+Create Date: 2023-03-23 21:55:48.951373
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'dffe75996704'
-down_revision = '0c82f305ae70'
+revision = '43651756094e'
+down_revision = '0b888744953d'
 branch_labels = None
 depends_on = None
 
@@ -23,13 +23,15 @@ def upgrade():
     sa.Column('title', sa.String(length=30), nullable=False),
     sa.Column('carbs_per_100g', sa.Float(), nullable=False),
     sa.Column('fats_per_100g', sa.Float(), nullable=False),
+    sa.Column('proteins_per_100g', sa.Float(), nullable=False),
     sa.Column('calories_per_100g', sa.Float(), nullable=False),
     sa.Column('created_on', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_on', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.Column('food_type', sa.Enum('grain', 'vegetable', 'fruit', 'meat_and_other_proteins', 'milk_product', 'nut', name='foodtype'), nullable=False),
     sa.Column('creator_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['creator_id'], ['admins.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['creator_id'], ['staffs.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('title')
     )
     # ### end Alembic commands ###
 

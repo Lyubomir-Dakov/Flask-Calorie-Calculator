@@ -16,7 +16,13 @@ class UserModel(BaseUserModel):
     role = db.Column(db.Enum(RoleType), default=RoleType.user, nullable=False)
 
 
+class StaffModel(BaseUserModel):
+    __tablename__ = "staffs"
+    role = db.Column(db.Enum(RoleType), default=RoleType.staff, nullable=False)
+    foods = db.relationship("FoodModel", backref="food", lazy="dynamic")
+
+
 class AdminModel(BaseUserModel):
     __tablename__ = "admins"
     role = db.Column(db.Enum(RoleType), default=RoleType.admin, nullable=False)
-    foods = db.relationship("FoodModel", backref="food", lazy="dynamic")
+

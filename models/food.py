@@ -7,7 +7,7 @@ from models.enums import FoodType
 class FoodModel(db.Model):
     __tablename__ = "foods"
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(30), nullable=False)
+    title = db.Column(db.String(30), nullable=False, unique=True)
     carbs_per_100g = db.Column(db.Float, nullable=False)
     fats_per_100g = db.Column(db.Float, nullable=False)
     proteins_per_100g = db.Column(db.Float, nullable=False)
@@ -15,5 +15,5 @@ class FoodModel(db.Model):
     created_on = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     updated_on = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
     food_type = db.Column(db.Enum(FoodType), nullable=False)
-    creator_id = db.Column(db.Integer, db.ForeignKey("admins.id"), nullable=False)
-    creator = db.relationship("AdminModel")
+    creator_id = db.Column(db.Integer, db.ForeignKey("staffs.id"), nullable=False)
+    creator = db.relationship("StaffModel")

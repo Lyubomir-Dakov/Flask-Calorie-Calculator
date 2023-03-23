@@ -1,9 +1,9 @@
 from db import db
-from managers.auth import auth
 from models import FoodModel
 
 
 class FoodManager:
+
     @staticmethod
     def create(data, creator_id):
         data["creator_id"] = creator_id

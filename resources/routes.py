@@ -1,8 +1,12 @@
 from resources.auth import RegisterUserResource, LoginUserResource
-from resources.food import CreateFoodResource
+from resources.food import BasicSearchFoodResource, AdvancedSearchFoodResource
+from resources.recipe import CreateRecipeResource
 
 routes = (
-    (RegisterUserResource, '/register'),
-    (LoginUserResource, '/login'),
-    (CreateFoodResource, '/food/create')
+    (RegisterUserResource, "/register"),
+    (LoginUserResource, "/login"),
+    # (CreateFoodResource, "/food/create"),
+    (BasicSearchFoodResource, "/food/basic_search"),
+    (AdvancedSearchFoodResource, "/food/advanced_search"),
+    (CreateRecipeResource, "/recipe")
 )

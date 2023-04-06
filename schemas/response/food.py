@@ -1,12 +1,18 @@
 from marshmallow import fields
 
-from schemas.bases import RequestFoodBaseSchema
+from schemas.request.food import RequestGetFoodSchema, RequestGetFoodSchemaAuth
 
 
-class ResponseFoodSchema(RequestFoodBaseSchema):
-    id = fields.Integer(required=True)
+class ResponseFoodSchema(RequestGetFoodSchema):
+    carbs_per_100g = fields.Float(required=True)
+    fats_per_100g = fields.Float(required=True)
+    proteins_per_100g = fields.Float(required=True)
     calories_per_100g = fields.Float(required=True)
-    created_on = fields.DateTime(required=True)
-    creator_id = fields.Integer(required=True)
+    food_type = fields.String(required=True)
 
-    # updated_on = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+
+class ResponseFoodSchemaAuth(ResponseFoodSchema, RequestGetFoodSchemaAuth):
+    proteins = fields.Float(required=True)
+    carbs = fields.Float(required=True)
+    fats = fields.Float(required=True)
+    calories = fields.Float(required=True)

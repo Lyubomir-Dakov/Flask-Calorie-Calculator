@@ -2,7 +2,6 @@ from flask import request
 from werkzeug.exceptions import BadRequest
 
 from managers.auth import auth
-from models import RoleType
 
 
 def validate_schema(schema_name):

@@ -19,7 +19,7 @@ class UserModel(BaseUserModel):
 class StaffModel(BaseUserModel):
     __tablename__ = "staffs"
     role = db.Column(db.Enum(RoleType), default=RoleType.staff, nullable=False)
-    foods = db.relationship("FoodModel", backref="food", lazy="dynamic")
+    # foods = db.relationship("FoodModel", backref="food", lazy="dynamic")
 
 
 class AdminModel(BaseUserModel):

@@ -1,22 +1,63 @@
-from managers.food import FoodManager
+import json
+
+from db import db
+from managers.auth import auth
+from models import RecipeModel
+from services.Edamam import Edamam_Service
+from utils.helpers import find_macros_per_100_grams, find_macros_for_given_amount
 
 
 class RecipeManager:
     @staticmethod
     def create(recipe_data):
-        recipe_data["proteins"] = 0
-        recipe_data["fats"] = 0
-        recipe_data["carbs"] = 0
-        recipe_data["calories"] = 0
-        for ingredient_name, amount in recipe_data["ingredients"].items():
+        service = Edamam_Service()
+        proteins = 0
+        fats = 0
+        carbs = 0
+        calories = 0
 
-            data = FoodManager.get({"title": ingredient_name, "amount": amount})
-            recipe_data["proteins"] += data["proteins"]
-            recipe_data["fats"] += data["fats"]
-            recipe_data["carbs"] += data["carbs"]
-            recipe_data["calories"] = data["calories"]
+        recipe_ingredients = list(recipe_data["ingredients"].keys())
 
-        print(f"proteins: {recipe_data['proteins']}")
-        print(f"fats: {recipe_data['fats']}")
-        print(f"carbs: {recipe_data['carbs']}")
-        print(f"calories: {recipe_data['calories']}")
+        # when the recipe contains more than 7 ingredients Edamam_Service returns recipe_ingredients = []
+        # split recipe_ingredients to smaller lists up to length = 7 and make request for every list
+        split_lists = []
+        edamam_limit = 7
+
+        for i in range(0, len(recipe_ingredients), edamam_limit):
+            split_lists.append(recipe_ingredients[i:i + edamam_limit])
+
+        for piece in split_lists:
+            foods = service.get_food(piece)["parsed"]
+            i = 0
+            for food in foods:
+                food_data = food["food"]
+                food_name = piece[i]
+                food_amount = recipe_data["ingredients"][food_name]
+                p, f, c, cal = find_macros_per_100_grams(food_data["nutrients"])
+                p, c, f, cal = find_macros_for_given_amount(food_amount, p, c, f, cal)
+                proteins += p
+                fats += f
+                carbs += c
+                calories += cal
+                i += 1
+
+        recipe_data["proteins"] = round(proteins, 2)
+        recipe_data["fats"] = round(fats, 2)
+        recipe_data["carbs"] = round(carbs, 2)
+        recipe_data["calories"] = round(calories, 2)
+
+        current_user = auth.current_user()
+        recipe_data["creator_id"] = current_user.id
+        # Convert ingredients dictionary to JSON string
+        recipe_data["ingredients"] = json.dumps(recipe_data["ingredients"])
+        recipe = RecipeModel(**recipe_data)
+
+        try:
+            db.session.add(recipe)
+            db.session.flush()
+            # Convert ingredients back to dictionary for response
+            recipe_data["ingredients"] = json.loads(recipe_data["ingredients"])
+            return recipe_data
+
+        except Exception as ex:
+            raise Exception

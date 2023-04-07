@@ -8,7 +8,6 @@ class ResponseFoodSchema(RequestGetFoodSchema):
     fats_per_100g = fields.Float(required=True)
     proteins_per_100g = fields.Float(required=True)
     calories_per_100g = fields.Float(required=True)
-    food_type = fields.String(required=True)
 
 
 class ResponseFoodSchemaAuth(ResponseFoodSchema, RequestGetFoodSchemaAuth):

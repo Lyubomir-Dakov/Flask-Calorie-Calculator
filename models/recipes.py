@@ -5,7 +5,7 @@ from sqlalchemy import func
 from db import db
 
 
-class Recipe(db.Model):
+class RecipeModel(db.Model):
     __tablename__ = "recipes"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)

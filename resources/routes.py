@@ -5,7 +5,6 @@ from resources.recipe import CreateRecipeResource
 routes = (
     (RegisterUserResource, "/register"),
     (LoginUserResource, "/login"),
-    # (CreateFoodResource, "/food/create"),
     (BasicSearchFoodResource, "/food/basic_search"),
     (AdvancedSearchFoodResource, "/food/advanced_search"),
     (CreateRecipeResource, "/recipe")

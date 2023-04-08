@@ -12,16 +12,20 @@ def validate_schema(schema_name):
             if errors:
                 raise BadRequest(errors)
             return func(*args, **kwargs)
+
         return wrapper
+
     return validated_func
 
 
-def permission_required(staff):
+def permission_required(user_role):
     def validated_func(func):
         def wrapper(*args, **kwargs):
             current_user = auth.current_user()
-            if not current_user.role == staff:
+            if not current_user.role == user_role:
                 raise BadRequest("You don't have permission to access this resource")
             return func(*args, **kwargs)
+
         return wrapper
+
     return validated_func

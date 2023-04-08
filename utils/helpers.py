@@ -1,3 +1,6 @@
+from models import UserModel, StaffModel, AdminModel
+
+
 def find_macros_per_100_grams(food_data):
     return food_data["PROCNT"], food_data["FAT"], food_data["CHOCDF"], food_data["ENERC_KCAL"]
 
@@ -8,3 +11,10 @@ def find_macros_for_given_amount(amount, proteins_per_100g, carbs_per_100g, fats
     fats = (fats_per_100g * float(amount)) / 100
     calories = (calories_per100g * float(amount)) / 100
     return proteins, carbs, fats, calories
+
+
+def user_mapper(user_type):
+    x = {"UserModel": UserModel,
+         "StaffModel": StaffModel,
+         "AdminModel": AdminModel}
+    return x[user_type]

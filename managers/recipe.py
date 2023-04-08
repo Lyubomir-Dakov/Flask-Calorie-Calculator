@@ -1,5 +1,7 @@
 import json
 
+from werkzeug.exceptions import BadRequest
+
 from db import db
 from managers.auth import auth
 from models import RecipeModel
@@ -28,6 +30,8 @@ class RecipeManager:
 
         for piece in split_lists:
             foods = service.get_food(piece)["parsed"]
+            if len(foods) < len(piece):
+                raise BadRequest("This recipe contains incorrect ingredient name or it doesn't exists in the database!")
             i = 0
             for food in foods:
                 food_data = food["food"]

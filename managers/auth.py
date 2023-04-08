@@ -6,6 +6,7 @@ from flask_httpauth import HTTPTokenAuth
 from werkzeug.exceptions import Unauthorized
 
 from models import UserModel, AdminModel, StaffModel
+from utils.helpers import user_mapper
 
 
 class AuthManager:
@@ -42,8 +43,4 @@ def verify_token(token):
         raise Unauthorized("Invalid or missing token")
 
 
-def user_mapper(user_type):
-    x = {"UserModel": UserModel,
-         "StaffModel": StaffModel,
-         "AdminModel": AdminModel}
-    return x[user_type]
+

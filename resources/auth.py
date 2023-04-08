@@ -1,9 +1,12 @@
 from flask import request
 from flask_restful import Resource
+from werkzeug.exceptions import BadRequest
 
+from managers.auth import auth
 from managers.user import UserManager
-from schemas.request.user import RequestUserRegisterSchema, RequestUserLoginSchema
-from utils.decorators import validate_schema
+from models import RoleType
+from schemas.request.user import RequestUserRegisterSchema, RequestUserLoginSchema, RequestUserUpdateSchema
+from utils.decorators import validate_schema, permission_required
 
 
 class RegisterUserResource(Resource):
@@ -22,3 +25,19 @@ class LoginUserResource(Resource):
         return {"token": token, "role": user_role}
 
 
+class UpdateUserResource(Resource):
+    @auth.login_required
+    @validate_schema(RequestUserUpdateSchema)
+    def put(self, pk):
+        current_user = auth.current_user().id
+        if not current_user == pk:
+            raise BadRequest("You are don't have access to this resource!")
+
+        data = request.get_json()
+        return {"message": UserManager.update(data)}
+
+
+class DeleteUserResource(Resource):
+    @permission_required(RoleType.admin)
+    def delete(self, pk):
+        pass

@@ -1,7 +1,8 @@
-from marshmallow import fields, validates_schema
+from marshmallow import fields, validates_schema, validate
 from werkzeug.exceptions import BadRequest
 
 from schemas.bases import RequestUserBaseSchema
+from utils.validators import validate_password
 
 
 class RequestUserRegisterSchema(RequestUserBaseSchema):
@@ -15,7 +16,7 @@ class RequestUserLoginSchema(RequestUserBaseSchema):
 
 class RequestUserUpdateSchema(RequestUserBaseSchema):
     new_email = fields.String()
-    new_password = fields.String()
+    new_password = fields.String(validate=validate.And(validate.Length(min=8, max=50), validate_password))
     new_first_name = fields.String()
     new_last_name = fields.String()
     retype_new_password = fields.String()

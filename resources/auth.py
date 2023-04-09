@@ -31,13 +31,14 @@ class UpdateUserResource(Resource):
     def put(self, pk):
         current_user = auth.current_user().id
         if not current_user == pk:
-            raise BadRequest("You are don't have access to this resource!")
+            raise BadRequest("You don't have permission to access this resource")
 
         data = request.get_json()
         return {"message": UserManager.update(data)}
 
 
 class DeleteUserResource(Resource):
+    @auth.login_required()
     @permission_required(RoleType.admin)
     def delete(self, pk):
-        pass
+        return UserManager.delete_user(pk)

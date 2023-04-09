@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -5,9 +6,11 @@ from db import db
 from managers.auth import AuthManager, auth
 from models.user import UserModel, AdminModel, StaffModel
 from utils.helpers import user_mapper
+from utils.validators import validate_password
 
 
 class UserManager:
+
     @staticmethod
     def register(user_data):
         # hash the password from the given data
@@ -18,8 +21,14 @@ class UserManager:
             db.session.add(user)
             db.session.flush()
             return AuthManager.encode_token(user)
-        except Exception as ex:
-            raise BadRequest(str(ex))
+        except IntegrityError as ex:
+            db.session.rollback()  # Rollback the session to prevent database inconsistencies
+            error_info = ex.orig.args[0]  # Get the error message from the original exception
+            if "email" in error_info:
+                error_message = "This email is already registered. Please use a different email."
+            else:
+                error_message = "An error occurred while registering the user."
+            raise BadRequest(error_message)
 
     @staticmethod
     def login(login_data):
@@ -42,11 +51,12 @@ class UserManager:
         user = auth.current_user()
         # Check if the email and password from requested data match with the current user email and password
         # and if not throws an error ""Invalid username or password""
-        if user and user_mapper(user.__class__.__name__).query.filter_by(email=update_data["email"]).first()\
+        if user and user_mapper(user.__class__.__name__).query.filter_by(email=update_data["email"]).first() \
                 and check_password_hash(user.password, update_data["password"]):
             updated_data = []
             if update_data["new_email"] and update_data["new_email"] != user.email:
                 user.email = update_data["new_email"]
+
                 updated_data.append("email")
             if update_data["new_password"] and not check_password_hash(user.password, update_data["new_password"]):
                 user.password = generate_password_hash(password=update_data["new_password"], method="sha256")
@@ -67,3 +77,11 @@ class UserManager:
 
         else:
             raise BadRequest("Invalid username or password")
+
+    @staticmethod
+    def delete_user(pk):
+        user_to_delete = UserModel.query.filter_by(id=pk).first()
+        if not user_to_delete:
+            raise BadRequest(f"User with id {pk} doesn't exist!")
+        db.session.delete(user_to_delete)
+        return "", 204

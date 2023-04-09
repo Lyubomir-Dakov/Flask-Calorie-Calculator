@@ -6,7 +6,7 @@ routes = (
     (RegisterUserResource, "/user/register"),
     (LoginUserResource, "/user/login"),
     (UpdateUserResource, "/user/<int:pk>/update"),
-    (DeleteUserResource, "/user/delete"),
+    (DeleteUserResource, "/user/<int:pk>/delete"),
     (BasicSearchFoodResource, "/food/basic_search"),
     (AdvancedSearchFoodResource, "/food/advanced_search"),
     (CreateRecipeResource, "/recipe")

@@ -1,6 +1,7 @@
 from marshmallow import fields
 
 from schemas.bases import RequestFoodBaseSchema
+from utils.validators import validate_food_amount
 
 
 class RequestGetFoodSchema(RequestFoodBaseSchema):
@@ -8,4 +9,4 @@ class RequestGetFoodSchema(RequestFoodBaseSchema):
 
 
 class RequestGetFoodSchemaAuth(RequestFoodBaseSchema):
-    amount = fields.Float(required=True)
+    amount = fields.Float(required=True, validate=validate_food_amount)

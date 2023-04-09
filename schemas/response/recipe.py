@@ -5,6 +5,7 @@ from schemas.bases import RequestRecipeBaseSchema
 
 class ResponseRecipeCreateSchema(RequestRecipeBaseSchema):
     id = fields.Integer(required=True)
+    ingredients = fields.Dict(required=True)
     proteins = fields.Float(required=True)
     fats = fields.Float(required=True)
     carbs = fields.Float(required=True)

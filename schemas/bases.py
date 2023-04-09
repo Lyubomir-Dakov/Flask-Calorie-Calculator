@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, validate
 
-from utils.validators import validate_password
+from utils.validators import validate_password, validate_recipe_title, validate_food_title
 
 
 class RequestUserBaseSchema(Schema):
@@ -9,9 +9,8 @@ class RequestUserBaseSchema(Schema):
 
 
 class RequestFoodBaseSchema(Schema):
-    title = fields.String(required=True)
+    title = fields.String(required=True, validate=validate_food_title)
 
 
 class RequestRecipeBaseSchema(Schema):
-    title = fields.String(required=True)
-    ingredients = fields.Dict(required=True)
+    title = fields.String(required=True, validate=validate_recipe_title)

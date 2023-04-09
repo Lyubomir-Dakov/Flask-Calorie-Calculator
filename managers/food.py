@@ -27,7 +27,7 @@ class FoodManager:
 
         return food
 
-    # TODO Validate if used has posted one food or more. ??
+    # TODO Validate if user has posted one food or more. ??
     @staticmethod
     def advanced_search(data):
         food = FoodManager.basic_search(data)
@@ -35,10 +35,7 @@ class FoodManager:
         carbs_per_100g = food["carbs_per_100g"]
         fats_per_100g = food["fats_per_100g"]
         calories_per_100g = food["calories_per_100g"]
-
         amount = data["amount"]
-        if amount < 0:
-            raise BadRequest("Amount should be positive float number.")
         proteins, carbs, fats, calories = find_macros_for_given_amount(amount, proteins_per_100g, carbs_per_100g,
                                                                        fats_per_100g, calories_per_100g)
         food = {**food,

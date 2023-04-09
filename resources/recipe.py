@@ -5,7 +5,7 @@ from werkzeug.exceptions import BadRequest
 from managers.auth import auth
 from managers.recipe import RecipeManager
 from models import RecipeModel
-from schemas.request.recipe import RequestRecipeCreateSchema
+from schemas.request.recipe import RequestRecipeCreateSchema, RequestRecipeDeleteSchema, RequestRecipeGetSchema
 from utils.decorators import validate_schema
 
 
@@ -21,3 +21,25 @@ class CreateRecipeResource(Resource):
             raise BadRequest("You already have a recipe with that title.")
         recipe = RecipeManager.create(data)
         return recipe
+
+
+class GetRecipesResource(Resource):
+    @auth.login_required
+    def get(self, pk):
+        recipes = RecipeManager.get_your_recipes(pk)
+        return recipes
+
+
+class DeleteRecipeResource(Resource):
+    @auth.login_required
+    @validate_schema(RequestRecipeDeleteSchema)
+    def delete(self, pk):
+        data = request.get_json()
+        return RecipeManager.delete_recipe(pk, data["title"])
+
+
+class GetRecipeResource(Resource):
+    @auth.login_required
+    @validate_schema(RequestRecipeGetSchema)
+    def get(self, pk):
+        pass

@@ -15,7 +15,7 @@ class RecipeModel(db.Model):
     carbs = db.Column(db.Float, nullable=False)
     calories = db.Column(db.Float, nullable=False)
     created_on = db.Column(db.DateTime, server_default=func.now(), nullable=False)
-    updated_on = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+    updated_on = db.Column(db.DateTime, onupdate=func.now())
     creator_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     creator = db.relationship("UserModel")
 

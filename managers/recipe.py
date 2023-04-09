@@ -1,5 +1,6 @@
 import json
 
+import requests
 from werkzeug.exceptions import BadRequest
 
 from db import db
@@ -65,3 +66,25 @@ class RecipeManager:
 
         except Exception as ex:
             raise Exception
+
+    @staticmethod
+    def get_your_recipes(pk):
+        if not auth.current_user().id == pk:
+            raise BadRequest("You don't have permission to access this resource!")
+        recipes = RecipeModel.query.filter_by(creator_id=pk).all()
+        recipes = [recipe.title for recipe in recipes]
+        if not recipes:
+            raise BadRequest("You still don't have any recipes."
+                             " You could create some at 'http://127.0.0.1:5000/recipe'.")
+        return {"Recipes": ', '.join(recipes)}
+
+    @staticmethod
+    def delete_recipe(pk, recipe_title):
+        if not auth.current_user().id == pk:
+            raise BadRequest("You don't have permission to access this resource!")
+        recipe = RecipeModel.query.filter_by(title=recipe_title).first()
+        if not recipe:
+            raise BadRequest(f"You don't have a recipe with title {recipe_title}!")
+        db.session.delete(recipe)
+        return "", 204
+

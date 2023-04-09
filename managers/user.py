@@ -6,7 +6,7 @@ from db import db
 from managers.auth import AuthManager, auth
 from models.user import UserModel, AdminModel, StaffModel
 from utils.helpers import user_mapper
-from utils.validators import validate_password
+from utils.validators import validate_password, validate_if_email_already_exists
 
 
 class UserManager:
@@ -53,6 +53,7 @@ class UserManager:
         # and if not throws an error ""Invalid username or password""
         if user and user_mapper(user.__class__.__name__).query.filter_by(email=update_data["email"]).first() \
                 and check_password_hash(user.password, update_data["password"]):
+            validate_if_email_already_exists(update_data["new_email"])
             updated_data = []
             if update_data["new_email"] and update_data["new_email"] != user.email:
                 user.email = update_data["new_email"]

@@ -1,6 +1,7 @@
 from resources.auth import RegisterUserResource, LoginUserResource, UpdateUserResource, DeleteUserResource
 from resources.food import BasicSearchFoodResource, AdvancedSearchFoodResource
-from resources.recipe import CreateRecipeResource, GetRecipesResource, DeleteRecipeResource, GetRecipeResource
+from resources.recipe import CreateRecipeResource, GetRecipesResource, DeleteRecipeResource, GetRecipeResource, \
+    UpdateRecipeResource
 
 routes = (
     (RegisterUserResource, "/user/register"),
@@ -15,4 +16,5 @@ routes = (
     (GetRecipesResource, "/recipes/<int:pk>/get"),
     (GetRecipeResource, "/recipe/<int:pk>/get"),
     (DeleteRecipeResource, "/recipe/<int:pk>/delete"),
+    (UpdateRecipeResource, "/recipe/<int:pk>/update")
 )

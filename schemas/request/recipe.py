@@ -20,3 +20,7 @@ class RequestRecipeDeleteSchema(RequestRecipeBaseSchema):
 
 class RequestRecipeGetSchema(RequestRecipeBaseSchema):
     pass
+
+
+class RequestRecipeUpdateSchema(RequestRecipeCreateSchema):
+    pass

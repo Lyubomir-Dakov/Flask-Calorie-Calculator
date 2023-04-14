@@ -6,6 +6,7 @@ from werkzeug.exceptions import BadRequest
 from db import db
 from managers.auth import auth
 from models import RecipeModel
+from schemas.response.recipe import ResponseRecipeCreateSchema
 from services.Edamam import Edamam_Service
 from utils.helpers import find_macros_per_100_grams, find_macros_for_given_amount
 
@@ -72,11 +73,19 @@ class RecipeManager:
         if not auth.current_user().id == pk:
             raise BadRequest("You don't have permission to access this resource!")
         recipes = RecipeModel.query.filter_by(creator_id=pk).all()
-        recipes = [recipe.title for recipe in recipes]
         if not recipes:
             raise BadRequest("You still don't have any recipes."
                              " You could create some at 'http://127.0.0.1:5000/recipe'.")
-        return {"Recipes": ', '.join(recipes)}
+        return recipes
+
+    @staticmethod
+    def get_one_recipe(pk, recipe_title):
+        if not auth.current_user().id == pk:
+            raise BadRequest("You don't have permission to access this resource!")
+        recipe = RecipeModel.query.filter_by(title=recipe_title).first()
+        if not recipe:
+            raise BadRequest(f"You don't have a recipe with title {recipe_title}!")
+        return recipe
 
     @staticmethod
     def delete_recipe(pk, recipe_title):
@@ -87,4 +96,3 @@ class RecipeManager:
             raise BadRequest(f"You don't have a recipe with title {recipe_title}!")
         db.session.delete(recipe)
         return "", 204
-

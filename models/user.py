@@ -20,12 +20,6 @@ class UserModel(BaseUserModel):
     deleted_on = db.Column(db.DateTime, onupdate=func.now())
 
 
-class StaffModel(BaseUserModel):
-    __tablename__ = "staffs"
-    role = db.Column(db.Enum(RoleType), default=RoleType.staff, nullable=False)
-
-
 class AdminModel(BaseUserModel):
     __tablename__ = "admins"
     role = db.Column(db.Enum(RoleType), default=RoleType.admin, nullable=False)
-

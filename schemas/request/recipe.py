@@ -1,7 +1,7 @@
 from marshmallow import fields, validates
 
 from schemas.bases import RequestRecipeBaseSchema
-from utils.validators import validate_food_title, validate_food_amount
+from utils.validators import validate_food_title, validate_food_amount, validate_recipe_title
 
 
 class RequestRecipeCreateSchema(RequestRecipeBaseSchema):
@@ -23,4 +23,4 @@ class RequestRecipeGetSchema(RequestRecipeBaseSchema):
 
 
 class RequestRecipeUpdateSchema(RequestRecipeCreateSchema):
-    pass
+    new_title = fields.String(validate=validate_recipe_title)

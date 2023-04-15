@@ -8,7 +8,7 @@ from models import RecipeModel
 from schemas.bases import RequestRecipeBaseSchema
 from schemas.request.recipe import RequestRecipeCreateSchema, RequestRecipeDeleteSchema, RequestRecipeGetSchema, \
     RequestRecipeUpdateSchema
-from schemas.response.recipe import ResponseRecipeCreateSchema, ResponseRecipeGetSchema
+from schemas.response.recipe import ResponseRecipeCreateSchema, ResponseRecipeGetSchema, ResponseRecipeUpdateSchema
 from utils.decorators import validate_schema
 
 
@@ -20,7 +20,7 @@ class CreateRecipeResource(Resource):
         current_user_id = auth.current_user().id
         if RecipeModel.query.filter_by(creator_id=current_user_id, title=data["title"]).first():
             raise BadRequest("You already have a recipe with that title.")
-        recipe = RecipeManager.create(data)
+        recipe = RecipeManager.create_recipe(data)
         return ResponseRecipeCreateSchema().dump(recipe)
 
 
@@ -52,4 +52,7 @@ class UpdateRecipeResource(Resource):
     @auth.login_required
     @validate_schema(RequestRecipeUpdateSchema)
     def put(self, pk):
-        pass
+        data = request.get_json()
+        recipe = RecipeManager.update_recipe(pk, data)
+        return ResponseRecipeUpdateSchema().dump(recipe)
+

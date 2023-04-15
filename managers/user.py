@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from db import db
 from managers.auth import AuthManager, auth
-from models.user import UserModel, AdminModel, StaffModel
+from models.user import UserModel, AdminModel
 from utils.helpers import update_email, update_password, update_first_name, \
     update_last_name, updated_user_result_message
 from utils.validators import validate_email_and_password_on_update
@@ -36,8 +36,7 @@ class UserManager:
     @staticmethod
     def login(login_data):
         try:
-            user = UserModel.query.filter_by(email=login_data["email"]).first() \
-                   or StaffModel.query.filter_by(email=login_data["email"]).first() \
+            user = UserModel.query.filter_by(email=login_data["email"], deleted_on=None).first() \
                    or AdminModel.query.filter_by(email=login_data["email"]).first()
 
             if user and check_password_hash(user.password, login_data["password"]):
@@ -73,7 +72,7 @@ class UserManager:
 
     @staticmethod
     def soft_delete_user(pk):
-        user_to_delete = UserModel.query.filter_by(id=pk).first()
+        user_to_delete = UserModel.query.filter_by(id=pk, deleted_on=None).first()
         if not user_to_delete:
             raise BadRequest(f"User with id {pk} doesn't exist!")
         user_to_delete.deleted_on = datetime.datetime.utcnow()

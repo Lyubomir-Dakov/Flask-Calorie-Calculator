@@ -5,7 +5,7 @@ from password_strength import PasswordPolicy
 from werkzeug.exceptions import BadRequest
 from werkzeug.security import check_password_hash
 
-from models import UserModel, StaffModel, AdminModel
+from models import UserModel, AdminModel
 
 
 def validate_password(value):
@@ -75,6 +75,5 @@ def validate_email_and_password_on_update(update_data, user):
 
 def user_mapper(user_type):
     x = {"UserModel": UserModel,
-         "StaffModel": StaffModel,
          "AdminModel": AdminModel}
     return x[user_type]

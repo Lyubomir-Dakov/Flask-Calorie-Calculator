@@ -5,8 +5,7 @@ from decouple import config
 from flask_httpauth import HTTPTokenAuth
 from werkzeug.exceptions import Unauthorized
 
-from models import UserModel, AdminModel, StaffModel
-from utils.helpers import user_mapper
+from utils.validators import user_mapper
 
 
 class AuthManager:
@@ -41,6 +40,3 @@ def verify_token(token):
         return user
     except Exception as ex:
         raise Unauthorized("Invalid or missing token")
-
-
-

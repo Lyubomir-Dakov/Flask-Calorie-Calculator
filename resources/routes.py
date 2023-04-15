@@ -12,9 +12,9 @@ routes = (
     (BasicSearchFoodResource, "/food/basic_search"),
     (AdvancedSearchFoodResource, "/food/advanced_search"),
 
-    (CreateRecipeResource, "/recipe"),
-    (GetRecipesResource, "/recipes/<int:pk>/get"),
-    (GetRecipeResource, "/recipe/<int:pk>/get"),
-    (DeleteRecipeResource, "/recipe/<int:pk>/delete"),
-    (UpdateRecipeResource, "/recipe/<int:pk>/update")
+    (CreateRecipeResource, "/recipe/create"),
+    (GetRecipesResource, "/user/<int:pk>/recipes/get"),
+    (GetRecipeResource, "/user/<int:pk>/recipe/get"),
+    (DeleteRecipeResource, "/user/<int:pk>/recipe/delete"),
+    (UpdateRecipeResource, "/user/<int:pk>/recipe/update")
 )

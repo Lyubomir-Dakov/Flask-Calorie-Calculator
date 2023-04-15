@@ -1,13 +1,11 @@
 import json
 
-import requests
 from werkzeug.exceptions import BadRequest
 
 from db import db
 from managers.auth import auth
 from models import RecipeModel
-from schemas.response.recipe import ResponseRecipeCreateSchema
-from services.Edamam import Edamam_Service
+from services.edamam import Edamam_Service
 from utils.helpers import find_macros_per_100_grams, find_macros_for_given_amount
 
 
@@ -84,7 +82,7 @@ class RecipeManager:
             raise BadRequest("You don't have permission to access this resource!")
         recipe = RecipeModel.query.filter_by(title=recipe_title).first()
         if not recipe:
-            raise BadRequest(f"You don't have a recipe with title {recipe_title}!")
+            raise BadRequest(f"You don't have a recipe with title '{recipe_title}'!")
         return recipe
 
     @staticmethod
@@ -93,6 +91,6 @@ class RecipeManager:
             raise BadRequest("You don't have permission to access this resource!")
         recipe = RecipeModel.query.filter_by(title=recipe_title).first()
         if not recipe:
-            raise BadRequest(f"You don't have a recipe with title {recipe_title}!")
+            raise BadRequest(f"You don't have a recipe with title '{recipe_title}'!")
         db.session.delete(recipe)
         return "", 204

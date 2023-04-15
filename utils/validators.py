@@ -3,8 +3,9 @@ import string
 from marshmallow import ValidationError
 from password_strength import PasswordPolicy
 from werkzeug.exceptions import BadRequest
+from werkzeug.security import check_password_hash
 
-from models import UserModel
+from models import UserModel, StaffModel, AdminModel
 
 
 def validate_password(value):
@@ -34,8 +35,8 @@ def validate_password(value):
         raise ValidationError(error_message)
 
 
-def validate_if_email_already_exists(email):
-    if UserModel.query.filter_by(email=email).first():
+def validate_if_email_already_exists(email, user):
+    if user_mapper(user.__class__.__name__).query.filter_by(email=email).first():
         raise BadRequest("This email is already registered. Please use a different email.")
     return None
 
@@ -63,3 +64,17 @@ def validate_food_title(title):
 def validate_food_amount(amount):
     if amount < 0:
         raise ValidationError("Food amount could not be less than 0 grams!")
+
+
+def validate_email_and_password_on_update(update_data, user):
+    if user and user_mapper(user.__class__.__name__).query.filter_by(email=update_data["email"]).first() \
+            and check_password_hash(user.password, update_data["password"]):
+        return None
+    raise BadRequest("Invalid username or password")
+
+
+def user_mapper(user_type):
+    x = {"UserModel": UserModel,
+         "StaffModel": StaffModel,
+         "AdminModel": AdminModel}
+    return x[user_type]

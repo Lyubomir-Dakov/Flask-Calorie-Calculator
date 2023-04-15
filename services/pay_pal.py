@@ -8,10 +8,15 @@ class PayPal_Service():
     def __init__(self):
         self.client_id = config("PAY_PAL_CALORIE_CALCULATOR_ID")
         self.secret = config("PAY_PAL_CALORIE_CALCULATOR_SECRET")
+        self.base_url = config("PAY_PAL_SANDBOX_BASE_URL")
+        self.get_token_url = config("PAY_PAL_GET_ACCESS_TOKEN_URL")
+        self.request_id = config('PAY_PAL_REQUEST_ID')
+        self.premium_membership_product_id = config('PAY_PAL_PREMIUM_MEMBERSHIP_PRODUCT_ID')
+        self.premium_membership_plan_id = config('PAY_PAL_PREMIUM_MEMBERSHIP_PLAN_ID')
 
     # Token is valid for 9 hours
     def get_access_token(self):
-        get_token_url = config("PAY_PAL_GET_ACCESS_TOKEN_URL")
+        get_token_url = self.get_token_url
         headers = {
             "Accept": "application/json",
             "Accept-Language": "en_US",
@@ -31,11 +36,11 @@ class PayPal_Service():
             return None
 
     def create_product(self, access_token):
-        create_product_url = f"{config('PAY_PAL_SANDBOX_BASE_URL')}/v1/catalogs/products"
+        create_product_url = f"{self.base_url}/v1/catalogs/products"
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {access_token}",
-            "PayPal-Request-Id": f"PRODUCT-{config('PAY_PAL_REQUEST_ID')}"
+            "PayPal-Request-Id": f"PRODUCT-{self.request_id}"
         }
         body = {
             "name": "Calorie Calculator premium membership",
@@ -48,17 +53,17 @@ class PayPal_Service():
         return f"product_id: {product_id}"
 
     # 12-month, fixed-price subscription
-    # Includes a 15 USD set up fee per month and 15 USD initial fee
+    # Includes a 5 USD fee per month and 5 USD initial fee
     def create_plan(self, access_token):
-        create_plan_url = f"{config('PAY_PAL_SANDBOX_BASE_URL')}/v1/billing/plans"
+        create_plan_url = f"{self.base_url}/v1/billing/plans"
         headers = {
             "Accept": "application/json",
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
-            "PayPal-Request-Id": f"PLAN-{config('PAY_PAL_REQUEST_ID')}"
+            "PayPal-Request-Id": f"PLAN-{self.request_id}"
         }
         body = {
-            "product_id": config('PAY_PAL_PREMIUM_MEMBERSHIP_PRODUCT_ID'),
+            "product_id": self.premium_membership_product_id,
             "name": "Premium",
             "description": "Premium members are allowed to create their own recipes",
             "status": "ACTIVE",
@@ -92,14 +97,14 @@ class PayPal_Service():
         return response.json()
 
     def create_subscription(self, access_token):
-        subscription_url = f"{config('PAY_PAL_SANDBOX_BASE_URL')}/v1/billing/subscriptions"
+        subscription_url = f"{self.base_url}/v1/billing/subscriptions"
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {access_token}",
             'Accept': 'application/json',
         }
         body = {
-            "plan_id": config('PAY_PAL_PREMIUM_MEMBERSHIP_PLAN_ID'),
+            "plan_id": self.premium_membership_plan_id,
             "subscriber": {
                 "email_address": "sb-n6ih725498596@personal.example.com",
                 "name": {"given_name": "John", "surname": "Doe"}
@@ -110,7 +115,7 @@ class PayPal_Service():
         return response.json()
 
     def activate_subscription(self, subscription_id, access_token):
-        activate_subscription_url = f"{config('PAY_PAL_SANDBOX_BASE_URL')}/v1/billing/subscriptions/{subscription_id}/activate"
+        activate_subscription_url = f"{self.base_url}/v1/billing/subscriptions/{subscription_id}/activate"
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
@@ -122,7 +127,7 @@ class PayPal_Service():
         return response.json()
 
     def cancel_subscription(self, subscription_id, access_token):
-        cancel_subscription_url = f"{config('PAY_PAL_SANDBOX_BASE_URL')}/v1/billing/subscriptions/{subscription_id}/cancel"
+        cancel_subscription_url = f"{self.base_url}/v1/billing/subscriptions/{subscription_id}/cancel"
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
@@ -133,12 +138,12 @@ class PayPal_Service():
         response = requests.post(cancel_subscription_url, headers=headers, data=json_body)
 
 
-if __name__ == "__main__":
-    service = PayPal_Service()
-
-    # 1) get access token
-    access_token = service.get_access_token()
-    print(f"access_token: {access_token}")
+# if __name__ == "__main__":
+#     service = PayPal_Service()
+#
+#     # 1) get access token
+#     access_token = service.get_access_token()
+#     print(f"access_token: {access_token}")
 
     # 2) create a product - premium membership
     # create_premium_membership_product_id = service.create_product(access_token)
@@ -154,5 +159,10 @@ if __name__ == "__main__":
     # subscription_id = create_subscription['id']
     # print(f"subscription_id: {subscription_id}")
 
+    # Activation works only of the subscription is already approved, then canceled
+    # in order to activate it again
+    # activate_subscription = service.activate_subscription(subscription_id, access_token)
+
+
     # 5) cancel subscription
-    cancel_subscription = service.cancel_subscription("I-4FJARSW525DV", access_token)
+    # cancel_subscription = service.cancel_subscription("I-99HVL5B1CBUS", access_token)

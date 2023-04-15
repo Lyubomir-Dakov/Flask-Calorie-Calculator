@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -5,8 +7,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from db import db
 from managers.auth import AuthManager, auth
 from models.user import UserModel, AdminModel, StaffModel
-from utils.helpers import user_mapper
-from utils.validators import validate_password, validate_if_email_already_exists
+from utils.helpers import update_email, update_password, update_first_name, \
+    update_last_name, updated_user_result_message
+from utils.validators import validate_email_and_password_on_update
 
 
 class UserManager:
@@ -49,40 +52,30 @@ class UserManager:
     @staticmethod
     def update(update_data):
         user = auth.current_user()
+        updated_data = []
+
         # Check if the email and password from requested data match with the current user email and password
-        # and if not throws an error ""Invalid username or password""
-        if user and user_mapper(user.__class__.__name__).query.filter_by(email=update_data["email"]).first() \
-                and check_password_hash(user.password, update_data["password"]):
-            validate_if_email_already_exists(update_data["new_email"])
-            updated_data = []
-            if update_data["new_email"] and update_data["new_email"] != user.email:
-                user.email = update_data["new_email"]
+        validate_email_and_password_on_update(update_data, user)
 
-                updated_data.append("email")
-            if update_data["new_password"] and not check_password_hash(user.password, update_data["new_password"]):
-                user.password = generate_password_hash(password=update_data["new_password"], method="sha256")
-                updated_data.append("password")
-            if update_data["new_first_name"] and update_data["new_first_name"] != user.first_name:
-                user.first_name = update_data["new_first_name"]
-                updated_data.append("first name")
-            if update_data["new_last_name"] and update_data["new_last_name"] != user.last_name:
-                user.last_name = update_data["new_last_name"]
-                updated_data.append("last name")
+        # updates the email if a new email is provided
+        update_email(update_data, updated_data, user)
 
-            if len(updated_data) == 0:
-                return "The given data is the same as your current data"
-            elif len(updated_data) == 1:
-                return f"You successfully updated your {updated_data[0]}."
-            else:
-                return f"You successfully updated your {', '.join(updated_data[0:-1])} and {updated_data[-1]}."
+        # updates the password if a new password is provided
+        update_password(update_data, updated_data, user)
 
-        else:
-            raise BadRequest("Invalid username or password")
+        # updates the fist_name if a new first_name is provided
+        update_first_name(update_data, updated_data, user)
+
+        # updates the last_name if a new_last_name is provided
+        update_last_name(update_data, updated_data, user)
+
+        return updated_user_result_message(updated_data)
 
     @staticmethod
-    def delete_user(pk):
+    def soft_delete_user(pk):
         user_to_delete = UserModel.query.filter_by(id=pk).first()
         if not user_to_delete:
             raise BadRequest(f"User with id {pk} doesn't exist!")
-        db.session.delete(user_to_delete)
-        return "", 204
+        user_to_delete.deleted_on = datetime.datetime.utcnow()
+        db.session.commit()
+        return {"message": f"User with id {pk} has been soft deleted successfully"}

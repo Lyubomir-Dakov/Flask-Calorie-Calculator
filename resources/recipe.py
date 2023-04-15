@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 
@@ -47,9 +47,9 @@ class GetRecipeResource(Resource):
         recipe = RecipeManager.get_one_recipe(pk, data["title"])
         return ResponseRecipeGetSchema().dump(recipe)
 
+
 class UpdateRecipeResource(Resource):
     @auth.login_required
     @validate_schema(RequestRecipeUpdateSchema)
     def put(self, pk):
         pass
-

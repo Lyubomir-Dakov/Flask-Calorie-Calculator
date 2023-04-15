@@ -38,7 +38,7 @@ class UpdateUserResource(Resource):
 
 
 class DeleteUserResource(Resource):
-    @auth.login_required()
+    @auth.login_required
     @permission_required(RoleType.admin)
-    def delete(self, pk):
-        return UserManager.delete_user(pk)
+    def put(self, pk):
+        return UserManager.soft_delete_user(pk)

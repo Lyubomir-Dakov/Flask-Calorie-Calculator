@@ -1,6 +1,6 @@
 from werkzeug.exceptions import BadRequest
 
-from services.Edamam import Edamam_Service
+from services.edamam import Edamam_Service
 from utils.helpers import find_macros_per_100_grams, find_macros_for_given_amount
 
 

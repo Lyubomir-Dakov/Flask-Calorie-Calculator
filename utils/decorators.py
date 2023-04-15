@@ -23,7 +23,20 @@ def permission_required(user_role):
         def wrapper(*args, **kwargs):
             current_user = auth.current_user()
             if not current_user.role == user_role:
-                raise BadRequest("You don't have permission to access this resource")
+                raise BadRequest("You don't have permission to access this resource!")
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return validated_func
+
+
+def validate_user_status(user_status):
+    def validated_func(func):
+        def wrapper(*args, **kwargs):
+            current_user = auth.current_user()
+            if not current_user.status == user_status:
+                raise BadRequest("You don't have the correct status to access this resource!")
             return func(*args, **kwargs)
 
         return wrapper

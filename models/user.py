@@ -1,7 +1,7 @@
 from sqlalchemy import func
 
 from db import db
-from models.enums import RoleType
+from models.enums import RoleType, UserStatus
 
 
 class BaseUserModel(db.Model):
@@ -18,6 +18,7 @@ class UserModel(BaseUserModel):
     __tablename__ = "users"
     role = db.Column(db.Enum(RoleType), default=RoleType.user, nullable=False)
     deleted_on = db.Column(db.DateTime, onupdate=func.now())
+    status = db.Column(db.Enum(UserStatus), default=UserStatus.basic, nullable=False)
 
 
 class AdminModel(BaseUserModel):

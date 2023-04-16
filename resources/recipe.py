@@ -4,17 +4,18 @@ from werkzeug.exceptions import BadRequest
 
 from managers.auth import auth
 from managers.recipe import RecipeManager
-from models import RecipeModel
+from models import RecipeModel, UserStatus
 from schemas.bases import RequestRecipeBaseSchema
 from schemas.request.recipe import RequestRecipeCreateSchema, RequestRecipeDeleteSchema, RequestRecipeGetSchema, \
     RequestRecipeUpdateSchema
 from schemas.response.recipe import ResponseRecipeCreateSchema, ResponseRecipeGetSchema, ResponseRecipeUpdateSchema
-from utils.decorators import validate_schema
+from utils.decorators import validate_schema, validate_user_status
 
 
 class CreateRecipeResource(Resource):
     @auth.login_required
     @validate_schema(RequestRecipeCreateSchema)
+    @validate_user_status(UserStatus.premium)
     def post(self):
         data = request.get_json()
         current_user_id = auth.current_user().id
@@ -26,6 +27,7 @@ class CreateRecipeResource(Resource):
 
 class GetRecipesResource(Resource):
     @auth.login_required
+    @validate_user_status(UserStatus.premium)
     def get(self, pk):
         recipes = RecipeManager.get_your_recipes(pk)
         return RequestRecipeBaseSchema().dump(recipes, many=True)
@@ -34,6 +36,7 @@ class GetRecipesResource(Resource):
 class DeleteRecipeResource(Resource):
     @auth.login_required
     @validate_schema(RequestRecipeDeleteSchema)
+    @validate_user_status(UserStatus.premium)
     def delete(self, pk):
         data = request.get_json()
         return RecipeManager.delete_recipe(pk, data["title"])
@@ -42,6 +45,7 @@ class DeleteRecipeResource(Resource):
 class GetRecipeResource(Resource):
     @auth.login_required
     @validate_schema(RequestRecipeGetSchema)
+    @validate_user_status(UserStatus.premium)
     def get(self, pk):
         data = request.get_json()
         recipe = RecipeManager.get_one_recipe(pk, data["title"])
@@ -51,6 +55,7 @@ class GetRecipeResource(Resource):
 class UpdateRecipeResource(Resource):
     @auth.login_required
     @validate_schema(RequestRecipeUpdateSchema)
+    @validate_user_status(UserStatus.premium)
     def put(self, pk):
         data = request.get_json()
         recipe = RecipeManager.update_recipe(pk, data)

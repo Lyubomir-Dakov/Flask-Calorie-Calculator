@@ -2,7 +2,7 @@ from werkzeug.exceptions import BadRequest
 
 from db import db
 from managers.auth import auth
-from models import SubscriptionModel, UserStatus, SubscriptionStatus
+from models import SubscriptionModel, UserStatus, SubscriptionStatus, RoleType
 from services.pay_pal import PayPal_Service
 
 
@@ -27,7 +27,7 @@ class SubscriptionManager:
 
     @staticmethod
     def pause_subscription(subscription_id):
-        subscription = SubscriptionModel.query.filter_by(id=subscription_id).first()
+        subscription = SubscriptionModel.query.filter_by(id=subscription_id, status=SubscriptionStatus.active).first()
         if not subscription:
             raise BadRequest("There is not active subscription with such id!")
         current_user = auth.current_user()
@@ -37,9 +37,47 @@ class SubscriptionManager:
         service = PayPal_Service()
         access_token = service.get_access_token()
         try:
-            service.suspend_subscription(paypal_id, access_token)
+            message = service.suspend_subscription(paypal_id, access_token)
             subscription.status = SubscriptionStatus.paused
             current_user.status = UserStatus.basic
-            return subscription
+            return {"message": message}
+        except Exception:
+            raise BadRequest("Something went wrong!")
+
+    @staticmethod
+    def activate_subscription(subscription_id):
+        subscription = SubscriptionModel.query.filter_by(id=subscription_id, status=SubscriptionStatus.paused).first()
+        if not subscription:
+            raise BadRequest("There is not paused subscription with such id!")
+        current_user = auth.current_user()
+        if not subscription.subscriber_id == current_user.id:
+            raise BadRequest("You don't have access to this resource!")
+        paypal_id = subscription.paypal_id
+        service = PayPal_Service()
+        access_token = service.get_access_token()
+        try:
+            message = service.activate_subscription(paypal_id, access_token)
+            subscription.status = SubscriptionStatus.active
+            current_user.status = UserStatus.premium
+            return {"message": message}
+        except Exception:
+            raise BadRequest("Something went wrong!")
+
+    @staticmethod
+    def cancel_subscription(subscription_id):
+        subscription = SubscriptionModel.query.filter_by(id=subscription_id).first()
+        if not subscription or subscription.status == SubscriptionStatus.canceled:
+            raise BadRequest("There is not active or paused subscription with such id!")
+        current_user = auth.current_user()
+        if not subscription.subscriber_id == current_user.id and not current_user.role == RoleType.admin:
+            raise BadRequest("You don't have access to this resource!")
+        paypal_id = subscription.paypal_id
+        service = PayPal_Service()
+        access_token = service.get_access_token()
+        try:
+            message = service.cancel_subscription(paypal_id, access_token)
+            subscription.status = SubscriptionStatus.canceled
+            current_user.status = UserStatus.basic
+            return {"message": message}
         except Exception:
             raise BadRequest("Something went wrong!")

@@ -3,7 +3,6 @@ from flask_restful import Resource
 
 from managers.auth import auth
 from managers.food import FoodManager
-
 from schemas.request.food import RequestGetFoodSchema, RequestGetFoodSchemaAuth
 from schemas.response.food import ResponseFoodSchema, ResponseFoodSchemaAuth
 from utils.decorators import validate_schema
@@ -24,8 +23,3 @@ class AdvancedSearchFoodResource(Resource):
         data = request.get_json()
         food = FoodManager.advanced_search(data)
         return ResponseFoodSchemaAuth().dump(food)
-
-
-
-
-

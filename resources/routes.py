@@ -22,6 +22,6 @@ routes = (
 
     (CreateSubscriptionResource, "/subscription/create"),
     (PauseSubscriptionResource, "/subscription/<int:pk>/pause"),
-    (ActivateSubscriptionResource, "/subscription//<int:pk>/activate"),
+    (ActivateSubscriptionResource, "/subscription/<int:pk>/activate"),
     (CancelSubscriptionResource, "/subscription/<int:pk>/cancel")
 )

@@ -33,8 +33,7 @@ class PayPal_Service():
             access_token = response.json()['access_token']
             return access_token
         else:
-            print("Failed to get access token. Status code:", response.status_code)
-            return None
+            raise BadRequest(f"Failed to get access token. Status code: {response.status_code}")
 
     def create_product(self, access_token):
         create_product_url = f"{self.base_url}/v1/catalogs/products"
@@ -95,7 +94,8 @@ class PayPal_Service():
         }
         json_body = json.dumps(body)
         response = requests.post(url=create_plan_url, headers=headers, data=json_body)
-        return response.json()
+        if response.status_code == 201:
+            return response.json()
 
     def create_subscription(self, access_token):
         subscription_url = f"{self.base_url}/v1/billing/subscriptions"
@@ -109,7 +109,10 @@ class PayPal_Service():
         }
         json_body = json.dumps(body)
         response = requests.post(url=subscription_url, headers=headers, data=json_body)
-        return response.json()["id"], response.json()["links"][0]["href"]
+        if response.status_code == 201:
+            return response.json()["id"], response.json()["links"][0]["href"]
+        else:
+            raise BadRequest("Something went wrong!")
 
     def activate_subscription(self, subscription_id, access_token):
         activate_subscription_url = f"{self.base_url}/v1/billing/subscriptions/{subscription_id}/activate"
@@ -120,11 +123,11 @@ class PayPal_Service():
         }
         body = {}
         json_body = json.dumps(body)
-        try:
-            response = requests.post(activate_subscription_url, headers=headers, data=json_body)
-            if response.status_code == 204:
-                return f"You successfully activated subscription with id '{subscription_id}'!"
-        except Exception as ex:
+
+        response = requests.post(activate_subscription_url, headers=headers, data=json_body)
+        if response.status_code == 204:
+            return f"Subscription with id '{subscription_id}' was successfully activated!"
+        else:
             raise BadRequest("Something went wrong! You can reactivate only paused subscriptions!")
 
     def cancel_subscription(self, subscription_id, access_token):
@@ -136,11 +139,11 @@ class PayPal_Service():
         }
         body = {"reason": ""}
         json_body = json.dumps(body)
-        try:
-            response = requests.post(cancel_subscription_url, headers=headers, data=json_body)
-            if response.status_code == 204:
-                return f"You successfully canceled subscription with id {subscription_id}!"
-        except Exception as ex:
+
+        response = requests.post(cancel_subscription_url, headers=headers, data=json_body)
+        if response.status_code == 204:
+            return f"Subscription with id '{subscription_id}' was successfully canceled!"
+        else:
             raise BadRequest("Something went wrong! Invalid subscription id or access token!")
 
     def suspend_subscription(self, subscription_id, access_token):
@@ -151,44 +154,9 @@ class PayPal_Service():
         }
         body = {"reason": "Just do it!"}
         json_body = json.dumps(body)
-        try:
-            response = requests.post(suspend_subscription_url, headers=headers, data=json_body)
-            if response.status_code == 204:
-                return f"Subscription with id '{subscription_id}' was successfully paused!"
-        except Exception as ex:
+
+        response = requests.post(suspend_subscription_url, headers=headers, data=json_body)
+        if response.status_code == 204:
+            return f"Subscription with id '{subscription_id}' was successfully paused!"
+        else:
             raise BadRequest("Something went wrong! Invalid subscription id or access token!")
-
-
-if __name__ == "__main__":
-    service = PayPal_Service()
-    #
-    # 1) get access token
-    access_token = service.get_access_token()
-    print(f"access_token: {access_token}")
-
-    # 2) create a product - premium membership
-    # create_premium_membership_product_id = service.create_product(access_token)
-    # print(create_premium_membership_product_id)
-
-    # 3) create a subscription plan
-    # create_premium_plan = service.create_plan(access_token)
-    # print(create_premium_plan)
-
-    # 4) create subscription
-    # create_subscription = service.create_subscription(access_token)
-    # print(create_subscription)
-    # subscription_id = create_subscription['id']
-    # print(f"subscription_id: {subscription_id}")
-
-    # Activation works only of the subscription is already approved, then SUSPENDED
-    # in order to activate it again
-    # activate_subscription = service.activate_subscription("I-U08N473HHFB6", access_token)
-    # print(activate_subscription)
-
-    # 5) cancel subscription
-    cancel_subscription = service.cancel_subscription("I-U08N473HHFB6", access_token)
-    print(cancel_subscription)
-
-    # 6) suspend subscription
-    # suspend_subscription = service.suspend_subscription("I-U08N473HHFB6", access_token)
-    # print(suspend_subscription)

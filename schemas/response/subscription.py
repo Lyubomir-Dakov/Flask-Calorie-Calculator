@@ -14,3 +14,15 @@ class ResponseSubscriptionCreateSchema(Schema):
     initial_tax = fields.Integer(required=True)
     monthly_tax = fields.Integer(required=True)
     subscriber_id = fields.Integer(required=True)
+
+
+class ResponseSubscriptionPauseSchema(Schema):
+    message = fields.String(required=True)
+
+
+class ResponseSubscriptionActivateSchema(Schema):
+    message = fields.String(required=True)
+
+
+class ResponseSubscriptionCancelSchema(Schema):
+    message = fields.String(required=True)

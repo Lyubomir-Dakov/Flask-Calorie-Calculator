@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from db import db
 from managers.auth import AuthManager, auth
 from managers.subscription import SubscriptionManager
-from models import SubscriptionModel, SubscriptionStatus
+from models import SubscriptionModel, SubscriptionStatus, UserStatus
 from models.user import UserModel, AdminModel
 from utils.helpers import update_email, update_password, update_first_name, \
     update_last_name, updated_user_result_message
@@ -78,6 +78,7 @@ class UserManager:
         if not user_to_delete:
             raise BadRequest(f"User with id {pk} doesn't exist!")
         user_to_delete.deleted = True
+        user_to_delete.status = UserStatus.basic
         subscription = SubscriptionModel.query.filter_by(subscriber_id=pk, status=SubscriptionStatus.active).first() or \
                        SubscriptionModel.query.filter_by(subscriber_id=pk, status=SubscriptionStatus.paused).first()
         if subscription:

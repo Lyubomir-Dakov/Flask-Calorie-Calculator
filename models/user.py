@@ -17,7 +17,7 @@ class BaseUserModel(db.Model):
 class UserModel(BaseUserModel):
     __tablename__ = "users"
     role = db.Column(db.Enum(RoleType), default=RoleType.user, nullable=False)
-    deleted_on = db.Column(db.DateTime, onupdate=func.now())
+    deleted = db.Column(db.Boolean, default=False, nullable=False)
     status = db.Column(db.Enum(UserStatus), default=UserStatus.basic, nullable=False)
 
 

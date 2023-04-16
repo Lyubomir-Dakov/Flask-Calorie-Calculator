@@ -36,7 +36,7 @@ class UserManager:
     @staticmethod
     def login(login_data):
         try:
-            user = UserModel.query.filter_by(email=login_data["email"], deleted_on=None).first() \
+            user = UserModel.query.filter_by(email=login_data["email"], deleted=False).first() \
                    or AdminModel.query.filter_by(email=login_data["email"]).first()
 
             if user and check_password_hash(user.password, login_data["password"]):
@@ -72,9 +72,9 @@ class UserManager:
 
     @staticmethod
     def soft_delete_user(pk):
-        user_to_delete = UserModel.query.filter_by(id=pk, deleted_on=None).first()
+        user_to_delete = UserModel.query.filter_by(id=pk, deleted=False).first()
         if not user_to_delete:
             raise BadRequest(f"User with id {pk} doesn't exist!")
-        user_to_delete.deleted_on = datetime.datetime.utcnow()
+        user_to_delete.deleted = True
         db.session.commit()
         return {"message": f"User with id {pk} has been soft deleted successfully"}

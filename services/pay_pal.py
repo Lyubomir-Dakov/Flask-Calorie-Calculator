@@ -109,7 +109,7 @@ class PayPal_Service():
         }
         json_body = json.dumps(body)
         response = requests.post(url=subscription_url, headers=headers, data=json_body)
-        return response.json()
+        return response.json()["id"], response.json()["links"][0]["href"]
 
     def activate_subscription(self, subscription_id, access_token):
         activate_subscription_url = f"{self.base_url}/v1/billing/subscriptions/{subscription_id}/activate"

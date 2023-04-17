@@ -16,6 +16,7 @@ class ResponseRecipeCreateSchema(RequestRecipeBaseSchema):
     created_on = fields.DateTime(required=True)
     updated_on = fields.DateTime(required=False)
     creator_id = fields.Integer(required=True)
+    photo_url = fields.URL(required=True)
 
 
 class ResponseRecipeGetSchema(ResponseRecipeCreateSchema):

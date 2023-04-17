@@ -2,7 +2,7 @@ import requests
 from decouple import config
 
 
-class Edamam_Service():
+class Edamam_Service:
     def __init__(self):
         self.base_url = config("EDAMAM_URL")
         self.headers = {

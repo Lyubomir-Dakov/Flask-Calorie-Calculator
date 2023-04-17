@@ -17,6 +17,7 @@ class RecipeModel(db.Model):
     created_on = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     updated_on = db.Column(db.DateTime, onupdate=func.now())
     creator_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    photo_url = db.Column(db.String(2000), nullable=False)
     creator = db.relationship("UserModel")
 
     # Takes a Python dictionary of ingredients and their respective amounts,

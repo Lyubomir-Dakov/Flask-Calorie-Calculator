@@ -5,7 +5,7 @@ from decouple import config
 from werkzeug.exceptions import BadRequest
 
 
-class PayPal_Service():
+class PayPal_Service:
     def __init__(self):
         self.client_id = config("PAY_PAL_CALORIE_CALCULATOR_ID")
         self.secret = config("PAY_PAL_CALORIE_CALCULATOR_SECRET")
@@ -47,8 +47,8 @@ class PayPal_Service():
             "description": "A premium membership subscription for Calorie Calculator app"
         }
 
-        json_body = json.dumps(body)
-        response = requests.post(create_product_url, headers=headers, data=json_body)
+        # json_body = json.dumps(body)
+        response = requests.post(create_product_url, headers=headers, json=body)
         product_id = response.json()["id"]
         return f"product_id: {product_id}"
 
@@ -107,8 +107,8 @@ class PayPal_Service():
         body = {
             "plan_id": self.premium_membership_plan_id
         }
-        json_body = json.dumps(body)
-        response = requests.post(url=subscription_url, headers=headers, data=json_body)
+        # json_body = json.dumps(body)
+        response = requests.post(url=subscription_url, headers=headers, json=body)
         if response.status_code == 201:
             return response.json()["id"], response.json()["links"][0]["href"]
         else:

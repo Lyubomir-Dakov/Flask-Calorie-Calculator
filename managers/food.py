@@ -1,6 +1,7 @@
 from werkzeug.exceptions import BadRequest
 
 from services.edamam import Edamam_Service
+from services.open_ai import OpenAI_Service
 from utils.helpers import find_macros_per_100_grams, find_macros_for_given_amount
 
 
@@ -10,20 +11,24 @@ from utils.helpers import find_macros_per_100_grams, find_macros_for_given_amoun
 class FoodManager:
     @staticmethod
     def basic_search(data):
-        service = Edamam_Service()
+        food_service = Edamam_Service()
+        open_ai_service = OpenAI_Service()
         food_name = data["title"]
 
         try:
-            food_data = service.get_food(food_name)["parsed"][0]["food"]["nutrients"]
+            food_data = food_service.get_food(food_name)["parsed"][0]["food"]["nutrients"]
             proteins_per_100g, fats_per_100g, carbs_per_100g, calories_per100g = find_macros_per_100_grams(food_data)
         except Exception as ex:
             raise BadRequest(f"There is no food with name {food_name}! Check spelling and try again.")
+
+        picture_url = open_ai_service.create_image(food_name)
 
         food = {"title": food_name,
                 "proteins_per_100g": proteins_per_100g,
                 "carbs_per_100g": carbs_per_100g,
                 "fats_per_100g": fats_per_100g,
-                "calories_per_100g": calories_per100g}
+                "calories_per_100g": calories_per100g,
+                "photo_url": picture_url}
 
         return food
 

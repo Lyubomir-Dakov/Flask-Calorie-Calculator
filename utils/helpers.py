@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from managers.auth import auth
 from services.edamam import Edamam_Service
+from services.open_ai import OpenAI_Service
 from utils.validators import validate_if_email_already_exists
 
 
@@ -59,7 +60,8 @@ def updated_user_result_message(updated_data):
 
 
 def count_macronutrients_in_recipe(recipe_data):
-    service = Edamam_Service()
+    food_service = Edamam_Service()
+    open_ai_service = OpenAI_Service()
     proteins = 0
     fats = 0
     carbs = 0
@@ -76,7 +78,7 @@ def count_macronutrients_in_recipe(recipe_data):
         split_lists.append(recipe_ingredients[i:i + edamam_limit])
 
     for piece in split_lists:
-        foods = service.get_food(piece)["parsed"]
+        foods = food_service.get_food(piece)["parsed"]
         if len(foods) < len(piece):
             raise BadRequest("This recipe contains incorrect ingredient name or it doesn't exists in the database!")
         i = 0
@@ -92,6 +94,7 @@ def count_macronutrients_in_recipe(recipe_data):
             calories += cal
             i += 1
 
+    recipe_data["photo_url"] = open_ai_service.create_image(recipe_data["title"])
     recipe_data["proteins"] = round(proteins, 2)
     recipe_data["fats"] = round(fats, 2)
     recipe_data["carbs"] = round(carbs, 2)

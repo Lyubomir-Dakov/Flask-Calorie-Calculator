@@ -18,9 +18,9 @@ class SubscriptionManager:
         subscription_data["subscriber_id"] = current_user.id
         try:
             subscription = SubscriptionModel(**subscription_data)
+            current_user.status = UserStatus.premium
             db.session.add(subscription)
             db.session.commit()
-            current_user.status = UserStatus.premium
             return subscription, approve_url
         except Exception:
             raise BadRequest("Something went wrong!")
@@ -40,6 +40,7 @@ class SubscriptionManager:
             message = service.suspend_subscription(paypal_id, access_token)
             subscription.status = SubscriptionStatus.paused
             current_user.status = UserStatus.basic
+            db.session.commit()
             return {"message": message}
         except Exception:
             raise BadRequest("Something went wrong!")

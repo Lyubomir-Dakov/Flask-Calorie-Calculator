@@ -2,12 +2,12 @@ from marshmallow import fields, validates_schema, validate
 from werkzeug.exceptions import BadRequest
 
 from schemas.bases import RequestUserBaseSchema
-from utils.validators import validate_password
+from utils.validators import validate_password, validate_user_name
 
 
 class RequestUserRegisterSchema(RequestUserBaseSchema):
-    first_name = fields.String(required=True)
-    last_name = fields.String(required=True)
+    first_name = fields.String(required=True, validate=validate_user_name)
+    last_name = fields.String(required=True, validate=validate_user_name)
 
 
 class RequestUserLoginSchema(RequestUserBaseSchema):
@@ -23,7 +23,9 @@ class RequestUserUpdateSchema(RequestUserBaseSchema):
 
     @validates_schema
     def validate_password_match(self, data, **kwargs):
-        new_password = data.get('new_password')
+        if not data.get("new_password"):
+            return None
+        new_password = data.get("new_password")
         retype_new_password = data.get('retype_new_password')
         if not retype_new_password:
             raise BadRequest('You need to retype your new password if you want to change your password')

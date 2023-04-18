@@ -11,6 +11,7 @@ class BaseUserModel(db.Model):
     last_name = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
+    created_on = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     updated_on = db.Column(db.DateTime, onupdate=func.now())
 
 

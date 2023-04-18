@@ -1,6 +1,6 @@
 import json
 
-from marshmallow import fields
+from marshmallow import fields, Schema
 
 from schemas.bases import RequestRecipeBaseSchema
 from schemas.request.recipe import RequestRecipeCreateSchema

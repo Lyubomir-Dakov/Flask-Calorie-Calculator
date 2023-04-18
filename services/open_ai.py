@@ -24,13 +24,3 @@ class OpenAI_Service:
         if response.status_code == 200:
             return response.json()["data"][0]["url"]
         raise BadRequest("Something went wrong")
-
-
-# if __name__ == "__main__":
-#     service = OpenAI_Service()
-#
-#     picture = service.create_image("musaka")
-#     print(picture)
-    #
-    # picture_2 = service.create_images_as_json("Bulgarian Moussaka")
-    # print(picture_2)

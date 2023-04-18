@@ -6,6 +6,8 @@ from managers.auth import auth
 from managers.user import UserManager
 from models import RoleType
 from schemas.request.user import RequestUserRegisterSchema, RequestUserLoginSchema, RequestUserUpdateSchema
+from schemas.response.user import ResponseUserRegisterSchema, ResponseUserLoginSchema, ResponseUserUpdateSchema, \
+    ResponseUserDeleteSchema
 from utils.decorators import validate_schema, permission_required
 
 
@@ -14,15 +16,15 @@ class RegisterUserResource(Resource):
     def post(self):
         data = request.get_json()
         token = UserManager.register(data)
-        return {"token": token}, 201
+        return ResponseUserRegisterSchema().dump({"token": token}), 201
 
 
 class LoginUserResource(Resource):
     @validate_schema(RequestUserLoginSchema)
     def post(self):
         data = request.get_json()
-        token, user_role = UserManager.login(data)
-        return {"token": token, "role": user_role}
+        token = UserManager.login(data)
+        return ResponseUserLoginSchema().dump({"token": token})
 
 
 class UpdateUserResource(Resource):
@@ -34,11 +36,14 @@ class UpdateUserResource(Resource):
             raise BadRequest("You don't have permission to access this resource")
 
         data = request.get_json()
-        return {"message": UserManager.update(data)}
+        # return {"message": UserManager.update(data)}
+        return ResponseUserUpdateSchema().dump({"message": UserManager.update(data)})
 
 
 class DeleteUserResource(Resource):
     @auth.login_required
     @permission_required(RoleType.admin)
     def put(self, pk):
-        return UserManager.soft_delete_user(pk)
+        result = UserManager.soft_delete_user(pk)
+        return ResponseUserDeleteSchema().dump(result)
+

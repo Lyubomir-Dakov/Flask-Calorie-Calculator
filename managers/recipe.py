@@ -50,7 +50,7 @@ class RecipeManager:
         if not recipe:
             raise BadRequest(f"You don't have a recipe with title '{recipe_title}'!")
         db.session.delete(recipe)
-        return "", 204
+        return f"You successfully deleted recipe with title '{recipe_title}'"
 
     @staticmethod
     def update_recipe(pk, recipe_data):

@@ -14,15 +14,15 @@ from utils.decorators import validate_schema, validate_user_status
 
 class CreateRecipeResource(Resource):
     @auth.login_required
-    @validate_schema(RequestRecipeCreateSchema)
     @validate_user_status(UserStatus.premium)
+    @validate_schema(RequestRecipeCreateSchema)
     def post(self):
         data = request.get_json()
         current_user_id = auth.current_user().id
         if RecipeModel.query.filter_by(creator_id=current_user_id, title=data["title"]).first():
             raise BadRequest("You already have a recipe with that title.")
         recipe = RecipeManager.create_recipe(data)
-        return ResponseRecipeCreateSchema().dump(recipe)
+        return ResponseRecipeCreateSchema().dump(recipe), 201
 
 
 class GetRecipesResource(Resource):
@@ -35,17 +35,18 @@ class GetRecipesResource(Resource):
 
 class DeleteRecipeResource(Resource):
     @auth.login_required
-    @validate_schema(RequestRecipeDeleteSchema)
     @validate_user_status(UserStatus.premium)
+    @validate_schema(RequestRecipeDeleteSchema)
     def delete(self, pk):
         data = request.get_json()
-        return RecipeManager.delete_recipe(pk, data["title"])
+        message = RecipeManager.delete_recipe(pk, data["title"])
+        return message, 204
 
 
 class GetRecipeResource(Resource):
     @auth.login_required
-    @validate_schema(RequestRecipeGetSchema)
     @validate_user_status(UserStatus.premium)
+    @validate_schema(RequestRecipeGetSchema)
     def get(self, pk):
         data = request.get_json()
         recipe = RecipeManager.get_one_recipe(pk, data["title"])
@@ -54,10 +55,9 @@ class GetRecipeResource(Resource):
 
 class UpdateRecipeResource(Resource):
     @auth.login_required
-    @validate_schema(RequestRecipeUpdateSchema)
     @validate_user_status(UserStatus.premium)
+    @validate_schema(RequestRecipeUpdateSchema)
     def put(self, pk):
         data = request.get_json()
         recipe = RecipeManager.update_recipe(pk, data)
         return ResponseRecipeUpdateSchema().dump(recipe)
-

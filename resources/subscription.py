@@ -15,7 +15,7 @@ class CreateSubscriptionResource(Resource):
     def post(self):
         subscription, approve_url = SubscriptionManager.create_subscription()
         return {"subscription_data": ResponseSubscriptionCreateSchema().dump(subscription),
-                "url to approve": approve_url}
+                "url to approve": approve_url}, 201
 
 
 class PauseSubscriptionResource(Resource):

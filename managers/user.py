@@ -43,8 +43,7 @@ class UserManager:
 
             if user and check_password_hash(user.password, login_data["password"]):
                 token = AuthManager.encode_token(user)
-                user_role = user.role.value
-                return token, user_role
+                return token
 
             raise Exception
         except Exception:

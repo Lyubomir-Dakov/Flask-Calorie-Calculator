@@ -1,5 +1,5 @@
 from flask import request
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, Forbidden
 
 from managers.auth import auth
 
@@ -23,7 +23,7 @@ def permission_required(user_role):
         def wrapper(*args, **kwargs):
             current_user = auth.current_user()
             if not current_user.role == user_role:
-                raise BadRequest("You don't have permission to access this resource!")
+                raise Forbidden("You don't have permission to access this resource!")
             return func(*args, **kwargs)
 
         return wrapper
@@ -36,7 +36,7 @@ def validate_user_status(user_status):
         def wrapper(*args, **kwargs):
             current_user = auth.current_user()
             if not current_user.status == user_status:
-                raise BadRequest("You don't have the correct status to access this resource!")
+                raise Forbidden("You don't have the correct status to access this resource!")
             return func(*args, **kwargs)
 
         return wrapper

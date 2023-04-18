@@ -5,10 +5,12 @@ from password_strength import PasswordPolicy
 from werkzeug.exceptions import BadRequest
 from werkzeug.security import check_password_hash
 
-from models import UserModel, AdminModel
+from models import UserModel, AdminModel, SubscriptionModel
 
 
 def validate_password(value):
+    if value == "":
+        raise ValidationError("You are not allowed to register with no password!")
     policy = PasswordPolicy.from_names(
         uppercase=1,
         numbers=1,
@@ -39,6 +41,24 @@ def validate_if_email_already_exists(email, user):
     if user_mapper(user.__class__.__name__).query.filter_by(email=email).first():
         raise BadRequest("This email is already registered. Please use a different email.")
     return None
+
+
+def validate_user_name(name):
+    if name == "":
+        raise ValidationError("You are not allowed to register with empty first or last name!")
+    special_symbols = string.punctuation
+    errors = []
+    for ch in name:
+        if ch.isdigit():
+            error_message = "You are not allowed to put digits into first or last name!"
+            if error_message not in errors:
+                errors.append(error_message)
+        if ch in special_symbols:
+            error_message = "You are not allowed to put special symbols into first or last name!"
+            if error_message not in errors:
+                errors.append(error_message)
+    if errors:
+        raise ValidationError(errors)
 
 
 def validate_recipe_title(title):
@@ -77,3 +97,17 @@ def user_mapper(user_type):
     x = {"UserModel": UserModel,
          "AdminModel": AdminModel}
     return x[user_type]
+
+
+def validate_subscription_pause_status(paypal_id):
+    subscription = SubscriptionModel.query.filter_by(paypal_id=paypal_id, status="pause")
+    if not subscription:
+        raise ValidationError(f"There is no paused subscription with id '{paypal_id}' that you can activate!")
+    return None
+
+
+def validate_subscription_cancel_status(paypal_id):
+    subscription = SubscriptionModel.query.filter_by(paypal_id=paypal_id)
+    if not subscription or subscription.status == "canceled":
+        raise ValidationError(f"There is not active or paused subscription with id '{paypal_id}' that you can cancel!")
+    return None

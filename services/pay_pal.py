@@ -1,5 +1,3 @@
-import json
-
 import requests
 from decouple import config
 from werkzeug.exceptions import BadRequest
@@ -46,8 +44,6 @@ class PayPal_Service:
             "name": "Calorie Calculator premium membership",
             "description": "A premium membership subscription for Calorie Calculator app"
         }
-
-        # json_body = json.dumps(body)
         response = requests.post(create_product_url, headers=headers, json=body)
         product_id = response.json()["id"]
         return f"product_id: {product_id}"
@@ -92,8 +88,7 @@ class PayPal_Service:
                 }
             }
         }
-        json_body = json.dumps(body)
-        response = requests.post(url=create_plan_url, headers=headers, data=json_body)
+        response = requests.post(url=create_plan_url, headers=headers, json=body)
         if response.status_code == 201:
             return response.json()
 
@@ -107,7 +102,6 @@ class PayPal_Service:
         body = {
             "plan_id": self.premium_membership_plan_id
         }
-        # json_body = json.dumps(body)
         response = requests.post(url=subscription_url, headers=headers, json=body)
         if response.status_code == 201:
             return response.json()["id"], response.json()["links"][0]["href"]
@@ -122,9 +116,7 @@ class PayPal_Service:
             "Accept": "application/json"
         }
         body = {}
-        json_body = json.dumps(body)
-
-        response = requests.post(activate_subscription_url, headers=headers, data=json_body)
+        response = requests.post(activate_subscription_url, headers=headers, json=body)
         if response.status_code == 204:
             return f"Subscription with id '{subscription_id}' was successfully activated!"
         else:
@@ -138,9 +130,7 @@ class PayPal_Service:
             "Accept": "application/json",
         }
         body = {"reason": ""}
-        json_body = json.dumps(body)
-
-        response = requests.post(cancel_subscription_url, headers=headers, data=json_body)
+        response = requests.post(cancel_subscription_url, headers=headers, json=body)
         if response.status_code == 204:
             return f"Subscription with id '{subscription_id}' was successfully canceled!"
         else:
@@ -153,9 +143,7 @@ class PayPal_Service:
             "Content-Type": "application/json"
         }
         body = {"reason": "Just do it!"}
-        json_body = json.dumps(body)
-
-        response = requests.post(suspend_subscription_url, headers=headers, data=json_body)
+        response = requests.post(suspend_subscription_url, headers=headers, json=body)
         if response.status_code == 204:
             return f"Subscription with id '{subscription_id}' was successfully paused!"
         else:

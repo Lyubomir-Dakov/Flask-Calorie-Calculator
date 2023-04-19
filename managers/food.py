@@ -5,9 +5,6 @@ from services.open_ai import OpenAI_Service
 from utils.helpers import find_macros_per_100_grams, find_macros_for_given_amount
 
 
-# TODO Validate food name with decorator and throw error
-#  "There is no food with such name! Check spelling and try again." if needed
-
 class FoodManager:
     @staticmethod
     def basic_search(data):
@@ -16,7 +13,7 @@ class FoodManager:
         food_name = data["title"]
 
         try:
-            food_data = food_service.get_food(food_name)["parsed"][0]["food"]["nutrients"]
+            food_data = food_service.get_food(food_name)
             proteins_per_100g, fats_per_100g, carbs_per_100g, calories_per100g = find_macros_per_100_grams(food_data)
         except Exception as ex:
             raise BadRequest(f"There is no food with name {food_name}! Check spelling and try again.")
@@ -32,7 +29,6 @@ class FoodManager:
 
         return food
 
-    # TODO Validate if user has posted one food or more. ??
     @staticmethod
     def advanced_search(data):
         food = FoodManager.basic_search(data)

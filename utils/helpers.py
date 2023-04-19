@@ -78,7 +78,7 @@ def count_macronutrients_in_recipe(recipe_data):
         split_lists.append(recipe_ingredients[i:i + edamam_limit])
 
     for piece in split_lists:
-        foods = food_service.get_food(piece)["parsed"]
+        foods = food_service.get_food_for_recipe(piece)
         if len(foods) < len(piece):
             raise BadRequest("This recipe contains incorrect ingredient name or it doesn't exists in the database!")
         i = 0

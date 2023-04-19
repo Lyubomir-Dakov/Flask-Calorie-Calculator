@@ -14,4 +14,10 @@ class Edamam_Service:
     def get_food(self, food_name):
         url = f"{self.base_url}/api/food-database/v2/parser?app_id={self.app_id}&app_key={self.app_key}&ingr={food_name}&nutrition-type=cooking&category=generic-foods"
         response = requests.get(url, headers=self.headers)
-        return response.json()
+        return response.json()["parsed"][0]["food"]["nutrients"]
+
+    def get_food_for_recipe(self, food_name):
+        url = f"{self.base_url}/api/food-database/v2/parser?app_id={self.app_id}&app_key={self.app_key}&ingr={food_name}&nutrition-type=cooking&category=generic-foods"
+        response = requests.get(url, headers=self.headers)
+        return response.json()["parsed"]
+

@@ -187,3 +187,11 @@ class TestRegisterLoginUpdateDeleteUser(TestRestAPIBase):
         assert res.status_code == 200
         assert res.json == {'message': 'User with id 1 has been soft deleted successfully'}
         assert user.deleted is True
+
+        # test deleted user tries to login raises error
+        data = {"email": user.email,
+                "password": user.password}
+        headers = {"Content-Type": "application/json"}
+        res = self.client.post("/user/login", headers=headers, json=data)
+        assert res.status_code == 400
+        assert res.json == {'message': 'Invalid username or password'}

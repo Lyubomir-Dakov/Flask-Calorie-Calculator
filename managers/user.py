@@ -81,6 +81,6 @@ class UserManager:
         subscription = SubscriptionModel.query.filter_by(subscriber_id=pk, status=SubscriptionStatus.active).first() or \
                        SubscriptionModel.query.filter_by(subscriber_id=pk, status=SubscriptionStatus.paused).first()
         if subscription:
-            SubscriptionManager.cancel_subscription(subscription.id)
+            SubscriptionManager.cancel_subscription(subscription.id, subscription.paypal_id)
         db.session.commit()
         return {"message": f"User with id {pk} has been soft deleted successfully"}

@@ -20,7 +20,3 @@ class TestRestAPIBase(TestCase):
 
 def generate_token(user):
     return AuthManager.encode_token(user)
-
-
-def mock_uuid():
-    return "1111-1111"

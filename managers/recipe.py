@@ -15,7 +15,7 @@ class RecipeManager:
         recipe = RecipeModel(**recipe_data)
         try:
             db.session.add(recipe)
-            db.session.flush()
+            db.session.commit()
             # Convert ingredients back to dictionary for response
             recipe_data["ingredients"] = json.loads(recipe_data["ingredients"])
             return recipe_data
@@ -50,6 +50,7 @@ class RecipeManager:
         if not recipe:
             raise BadRequest(f"You don't have a recipe with title '{recipe_title}'!")
         db.session.delete(recipe)
+        db.session.commit()
         return f"You successfully deleted recipe with title '{recipe_title}'"
 
     @staticmethod

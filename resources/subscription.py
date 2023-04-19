@@ -1,3 +1,4 @@
+from flask import request
 from flask_restful import Resource
 
 from managers.auth import auth
@@ -23,7 +24,8 @@ class PauseSubscriptionResource(Resource):
     @validate_user_status(UserStatus.premium)
     @validate_schema(RequestSubscriptionPauseSchema)
     def put(self, pk):
-        result = SubscriptionManager.pause_subscription(pk)
+        data = request.get_json()
+        result = SubscriptionManager.pause_subscription(pk, data["paypal_id"])
         return ResponseSubscriptionPauseSchema().dump(result)
 
 
@@ -31,12 +33,14 @@ class ActivateSubscriptionResource(Resource):
     @auth.login_required
     @validate_user_status(UserStatus.basic)
     def put(self, pk):
-        result = SubscriptionManager.activate_subscription(pk)
+        data = request.get_json()
+        result = SubscriptionManager.activate_subscription(pk, data["paypal_id"])
         return ResponseSubscriptionActivateSchema().dump(result)
 
 
 class CancelSubscriptionResource(Resource):
     @auth.login_required
     def put(self, pk):
-        result = SubscriptionManager.cancel_subscription(pk)
+        data = request.get_json()
+        result = SubscriptionManager.cancel_subscription(pk, data["paypal_id"])
         return ResponseSubscriptionCancelSchema().dump(result)

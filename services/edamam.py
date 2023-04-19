@@ -20,4 +20,3 @@ class Edamam_Service:
         url = f"{self.base_url}/api/food-database/v2/parser?app_id={self.app_id}&app_key={self.app_key}&ingr={food_name}&nutrition-type=cooking&category=generic-foods"
         response = requests.get(url, headers=self.headers)
         return response.json()["parsed"]
-

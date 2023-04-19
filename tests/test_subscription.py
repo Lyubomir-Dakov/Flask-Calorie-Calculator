@@ -163,7 +163,7 @@ class TestSubscription(TestRestAPIBase):
                    "Authorization": f"Bearer {token}"}
         res = self.client.put("/user/1/delete", headers=headers)
         assert res.status_code == 200
-        assert res.json == {'message': 'User with id 1 has been soft deleted successfully'}
+        assert res.json == {"message": "User with id 1 has been soft deleted successfully"}
         assert user.deleted is True
         assert user.status == UserStatus.basic
         assert subscription.status == SubscriptionStatus.canceled
@@ -207,7 +207,7 @@ class TestSubscription(TestRestAPIBase):
                    "Authorization": f"Bearer {admin_token}"}
         res = self.client.put("/user/1/delete", headers=headers)
         assert res.status_code == 200
-        assert res.json == {'message': 'User with id 1 has been soft deleted successfully'}
+        assert res.json == {"message": "User with id 1 has been soft deleted successfully"}
         assert user.deleted is True
         assert user.status == UserStatus.basic
         assert subscription.status == SubscriptionStatus.canceled

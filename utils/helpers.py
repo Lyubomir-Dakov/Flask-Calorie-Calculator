@@ -1,5 +1,3 @@
-import json
-
 from werkzeug.exceptions import BadRequest
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -102,6 +100,4 @@ def count_macronutrients_in_recipe(recipe_data):
 
     current_user = auth.current_user()
     recipe_data["creator_id"] = current_user.id
-    # Convert ingredients dictionary to JSON string
-    recipe_data["ingredients"] = json.dumps(recipe_data["ingredients"])
     return recipe_data

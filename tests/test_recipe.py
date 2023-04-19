@@ -49,20 +49,25 @@ class TestRecipe(TestRestAPIBase):
 
         # user creates a recipe
         res = self.client.post("/recipe/create", headers=headers, json=data)
+        json_message = res.json
+        json_message["created_on"] = "its created"
         assert res.status_code == 201
-        assert res.json == {"title": "Caprice Salad",
-                            "fats": 33.99,
-                            "photo_url": "some_created_image_url",
-                            "calories": 351.66,
-                            "proteins": 9.1,
-                            "ingredients": {"balsamic vinegar": 15,
-                                            "basil leaves": 12,
-                                            "mozzarella": 200,
-                                            "olive oil": 30,
-                                            "salt": 2,
-                                            "tomatoes": 400},
-                            "carbs": 6.49,
-                            "creator_id": 1}
+        assert json_message == {"proteins": 9.1,
+                                "calories": 351.66,
+                                "updated_on": None,
+                                "title": "Caprice Salad",
+                                "fats": 33.99,
+                                "carbs": 6.49,
+                                "created_on": "its created",
+                                "id": 1,
+                                "ingredients": {"balsamic vinegar": 15,
+                                                "basil leaves": 12,
+                                                "mozzarella": 200,
+                                                "olive oil": 30,
+                                                "salt": 2,
+                                                "tomatoes": 400},
+                                "photo_url": "some_created_image_url",
+                                "creator_id": 1}
         assert len(RecipeModel.query.all()) == 1
 
         # test to create one more recipe with the same title raises
@@ -92,10 +97,15 @@ class TestRecipe(TestRestAPIBase):
         res = self.client.put("/user/1/recipe/update", headers=headers, json=data)
         assert res.status_code == 200
         assert res.json["title"] == "Very big Caprice Salad"
+        assert res.json["updated_on"] is not None
 
         # if the tested recipe had more than 7 ingredients mock_get_food_for_recipe would be called more times
-        mock_get_food_for_recipe.assert_called_once_with(['balsamic vinegar', 'basil leaves',
-                                                          'mozzarella', 'olive oil', 'salt', 'tomatoes'])
+        mock_get_food_for_recipe.assert_called_once_with(["balsamic vinegar",
+                                                          "basil leaves",
+                                                          "mozzarella",
+                                                          "olive oil",
+                                                          "salt",
+                                                          "tomatoes"])
         mock_create_image.assert_called_once_with("Caprice Salad")
 
     def test_get_recipes(self):
@@ -122,12 +132,12 @@ class TestRecipe(TestRestAPIBase):
         data = {"title": "Incorrect recipe title"}
         res = self.client.get("/user/1/recipe/get", headers=headers, json=data)
         assert res.status_code == 400
-        assert res.json == {'message': "You don't have a recipe with title 'Incorrect recipe title'!"}
+        assert res.json == {"message": "You don't have a recipe with title 'Incorrect recipe title'!"}
 
         # test to get all user's recipes
         res = self.client.get("/user/1/recipes/get", headers=headers)
         assert res.status_code == 200
-        assert res.json == [{'title': 'Caprice Salad'}]
+        assert res.json == [{"title": "Caprice Salad"}]
 
         # test delete recipe
         data = {"title": recipe.title}

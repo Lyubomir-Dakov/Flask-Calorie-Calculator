@@ -1,5 +1,3 @@
-import json
-
 from werkzeug.exceptions import BadRequest
 
 from db import db
@@ -16,9 +14,7 @@ class RecipeManager:
         try:
             db.session.add(recipe)
             db.session.commit()
-            # Convert ingredients back to dictionary for response
-            recipe_data["ingredients"] = json.loads(recipe_data["ingredients"])
-            return recipe_data
+            return recipe
 
         except Exception as ex:
             raise Exception

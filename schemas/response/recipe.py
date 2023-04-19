@@ -1,9 +1,6 @@
-import json
-
-from marshmallow import fields, Schema
+from marshmallow import fields
 
 from schemas.bases import RequestRecipeBaseSchema
-from schemas.request.recipe import RequestRecipeCreateSchema
 
 
 class ResponseRecipeCreateSchema(RequestRecipeBaseSchema):
@@ -22,16 +19,6 @@ class ResponseRecipeCreateSchema(RequestRecipeBaseSchema):
 class ResponseRecipeGetSchema(ResponseRecipeCreateSchema):
     ingredients = fields.String(required=True)
 
-    def dump(self, obj):
-        recipe_data = super().dump(obj)
-        recipe_data["ingredients"] = json.loads(recipe_data["ingredients"])
-        return recipe_data
-
 
 class ResponseRecipeUpdateSchema(ResponseRecipeCreateSchema):
     ingredients = fields.String(required=True)
-
-    def dump(self, obj):
-        recipe_data = super().dump(obj)
-        recipe_data['ingredients'] = json.loads(recipe_data['ingredients'])
-        return recipe_data

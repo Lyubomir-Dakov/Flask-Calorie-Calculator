@@ -46,4 +46,3 @@ class DeleteUserResource(Resource):
     def put(self, pk):
         result = UserManager.soft_delete_user(pk)
         return ResponseUserDeleteSchema().dump(result)
-

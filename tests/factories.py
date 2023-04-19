@@ -51,12 +51,15 @@ class RecipeFactory(BaseFactory):
         model = RecipeModel
 
     title = "Caprice Salad"
-    ingredients = "{'tomatoes': 400, 'mozzarella': 200, 'basil leaves': 12," \
-                  " 'olive oil': 30, 'balsamic vinegar': 15, 'salt': 2}"
+    ingredients = {"tomatoes": 400,
+                   "mozzarella": 200,
+                   "basil leaves": 12,
+                   "olive oil": 30,
+                   "balsamic vinegar": 15,
+                   "salt": 2}
     proteins = 48.31
     fats = 75.58
     carbs = 22.81
     calories = 953.16
     creator_id = factory.LazyFunction(get_user_id)
     photo_url = "some_photo_url"
-

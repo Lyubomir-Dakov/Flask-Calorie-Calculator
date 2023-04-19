@@ -9,9 +9,9 @@ class PayPal_Service:
         self.secret = config("PAY_PAL_CALORIE_CALCULATOR_SECRET")
         self.base_url = config("PAY_PAL_SANDBOX_BASE_URL")
         self.get_token_url = config("PAY_PAL_GET_ACCESS_TOKEN_URL")
-        self.request_id = config('PAY_PAL_REQUEST_ID')
-        self.premium_membership_product_id = config('PAY_PAL_PREMIUM_MEMBERSHIP_PRODUCT_ID')
-        self.premium_membership_plan_id = config('PAY_PAL_PREMIUM_MEMBERSHIP_PLAN_ID')
+        self.request_id = config("PAY_PAL_REQUEST_ID")
+        self.premium_membership_product_id = config("PAY_PAL_PREMIUM_MEMBERSHIP_PRODUCT_ID")
+        self.premium_membership_plan_id = config("PAY_PAL_PREMIUM_MEMBERSHIP_PLAN_ID")
 
     # Token is valid for 9 hours
     def get_access_token(self):
@@ -28,7 +28,7 @@ class PayPal_Service:
 
         response = requests.post(get_token_url, headers=headers, data=body, auth=auth)
         if response.status_code == 200:
-            access_token = response.json()['access_token']
+            access_token = response.json()["access_token"]
             return access_token
         else:
             raise BadRequest(f"Failed to get access token. Status code: {response.status_code}")
@@ -97,7 +97,7 @@ class PayPal_Service:
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {access_token}",
-            'Accept': 'application/json',
+            "Accept": "application/json",
         }
         body = {
             "plan_id": self.premium_membership_plan_id

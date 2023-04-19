@@ -38,7 +38,7 @@ class TestingConfig:
     DEBUG = True
 
 
-def create_app(config='config.DevelopmentConfig'):
+def create_app(config="config.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(config)
 

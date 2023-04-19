@@ -1,5 +1,3 @@
-import json
-
 from sqlalchemy import func
 
 from db import db
@@ -9,7 +7,7 @@ class RecipeModel(db.Model):
     __tablename__ = "recipes"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    ingredients = db.Column(db.Text, nullable=False)
+    ingredients = db.Column(db.JSON, nullable=False)
     proteins = db.Column(db.Float, nullable=False)
     fats = db.Column(db.Float, nullable=False)
     carbs = db.Column(db.Float, nullable=False)
@@ -20,11 +18,8 @@ class RecipeModel(db.Model):
     photo_url = db.Column(db.String(2000), nullable=False)
     creator = db.relationship("UserModel")
 
-    # Takes a Python dictionary of ingredients and their respective amounts,
-    # and serialize it to a JSON string for storage in the database
     def set_ingredients(self, ingredients):
-        self.ingredients = json.dumps(ingredients)
+        self.ingredients = ingredients
 
-    # Retrieves the JSON string from the database and deserialize it back to a Python dictionary
     def get_ingredients(self):
-        return json.loads(self.ingredients)
+        return self.ingredients

@@ -26,8 +26,8 @@ class RequestUserUpdateSchema(RequestUserBaseSchema):
         if not data.get("new_password"):
             return None
         new_password = data.get("new_password")
-        retype_new_password = data.get('retype_new_password')
+        retype_new_password = data.get("retype_new_password")
         if not retype_new_password:
-            raise BadRequest('You need to retype your new password if you want to change your password')
+            raise BadRequest("You need to retype your new password if you want to change your password")
         if new_password and retype_new_password and new_password != retype_new_password:
-            raise BadRequest('New password and retype password do not match')
+            raise BadRequest("New password and retype password do not match")

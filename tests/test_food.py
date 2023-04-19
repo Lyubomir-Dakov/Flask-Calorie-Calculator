@@ -50,7 +50,7 @@ class TestSearchFood(TestRestAPIBase):
         data = {"title": "sddsfgsdf"}
         res = self.client.get("/food/basic_search", headers=headers, json=data)
         assert res.status_code == 400
-        assert res.json == {'message': 'There is no food with name sddsfgsdf! Check spelling and try again.'}
+        assert res.json == {"message": "There is no food with name sddsfgsdf! Check spelling and try again."}
         mock_get_food.assert_called_once_with(data["title"])
         # assert it will never reach the OpenAI_Service.create_image because it raises the error before it
         mock_create_image.assert_not_called()
@@ -63,12 +63,12 @@ class TestSearchFood(TestRestAPIBase):
         data = {"title": "apple"}
         res = self.client.get("/food/basic_search", headers=headers, json=data)
         assert res.status_code == 200
-        assert res.json == {'carbs_per_100g': 10.0,
-                            'title': 'apple',
-                            'proteins_per_100g': 5.0,
-                            'photo_url': 'some_created_food_picture',
-                            'calories_per_100g': 200.0,
-                            'fats_per_100g': 2.0}
+        assert res.json == {"carbs_per_100g": 10.0,
+                            "title": "apple",
+                            "proteins_per_100g": 5.0,
+                            "photo_url": "some_created_food_picture",
+                            "calories_per_100g": 200.0,
+                            "fats_per_100g": 2.0}
         mock_get_food.assert_called_once_with(data["title"])
         mock_create_image.assert_called_once_with(data["title"])
 
@@ -96,16 +96,16 @@ class TestSearchFood(TestRestAPIBase):
         data = {"title": "apple", "amount": 200}
         res = self.client.get("/food/advanced_search", headers=headers, json=data)
         assert res.status_code == 200
-        assert res.json == {'title': 'apple',
-                            'photo_url': 'some_created_food_picture',
-                            'calories_per_100g': 200.0,
-                            'amount': 200.0,
-                            'carbs': 20.0,
-                            'proteins_per_100g': 5.0,
-                            'fats': 4.0,
-                            'fats_per_100g': 2.0,
-                            'carbs_per_100g': 10.0,
-                            'calories': 400.0,
-                            'proteins': 10.0}
+        assert res.json == {"title": "apple",
+                            "photo_url": "some_created_food_picture",
+                            "calories_per_100g": 200.0,
+                            "amount": 200.0,
+                            "carbs": 20.0,
+                            "proteins_per_100g": 5.0,
+                            "fats": 4.0,
+                            "fats_per_100g": 2.0,
+                            "carbs_per_100g": 10.0,
+                            "calories": 400.0,
+                            "proteins": 10.0}
         mock_get_food.assert_called_once_with(data["title"])
         mock_create_image.assert_called_once_with(data["title"])

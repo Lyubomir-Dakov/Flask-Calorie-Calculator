@@ -39,16 +39,17 @@ Open command prompt terminal
 
 **Windows**
 
-Navigate to the root directory of the application. Open the command prompt and execute 'pytest tests/'.<br>
+Navigate to the root directory of the application. Open the command prompt and execute 'pytest tests/'.
 
     pytest tests/
 
-**Linux/macOS**<br>
-Navigate to the root directory of the application. Open the terminal and execute './run-tests.sh'.<br>
+**Linux/macOS**
+
+Navigate to the root directory of the application. Open the terminal and execute './run-tests.sh'.
 
     ./run-tests.sh
     
-This will run all the test cases in the 'tests' directory.<br>
+This will run all the test cases in the 'tests' directory.
 
 ## **REST API**
 
@@ -69,7 +70,7 @@ Request method **POST**
 Response
 
     {
-        "token": access_token
+        "token": "access_token"
     }
 
 ### **Login**
@@ -85,12 +86,12 @@ Request method **POST**
 Response<br>
 
     {
-        "token": access_token
+        "token": "access_token"
     }
 
 ### **Update user**
 
-Every registered user is allowed to update his/her credentials
+Every registered user is allowed to update his/her credentials.
 
 Request method **PUT**
 
@@ -137,7 +138,7 @@ Response
 
 ### **Basic food search**
     
-This is the public part of the application. Every user is allowed to use this resource including non registered/logged users
+This is the public part of the application. Every user is allowed to use this resource including non registered/logged users.
     
 Request method **GET**<br>
     
@@ -184,13 +185,146 @@ Response
         "amount": 130.0
     }
 
-### **Create recipe**<br>
+### **Create recipe**
 
-### **Get your all recipes**<br>
+Premium users can create their own recipes.
 
-### **Get one recipe**<br>
+Request method **POST**
 
-### **Update recipe**<br>
+    curl http://127.0.0.1:5000/recipe/create
+    -H "Content-Type: application/json"
+    -H "Authorization: Bearer <access_token>"
+    -d "title=Big Caprice Salad,
+       &ingredients={
+            'tomatoes': 400,
+            'mozzarella': 200,
+            'basil leaves': 12,
+            'olive oil': 30,
+            'balsamic vinegar': 15,
+            'salt': 2}"
+            
+Response
+
+    {
+        "photo_url": "some_created_photo_url",
+        "carbs": 22.81,
+        "created_on": "2023-04-20T10:37:03.059567",
+        "proteins": 48.31,
+        "id": 94,
+        "ingredients": {
+            "tomatoes": 400,
+            "mozzarella": 200,
+            "basil leaves": 12,
+            "olive oil": 30,
+            "balsamic vinegar": 15,
+            "salt": 2
+        },
+        "creator_id": 67,
+        "calories": 953.16,
+        "updated_on": null,
+        "fats": 75.58,
+        "title": "Big Caprice Salad"
+    }
+
+
+### **Get your all recipes**
+
+Premium users can get list of thei recipes
+
+Request method **GET**
+
+    curl http://127.0.0.1:5000/user/<int:pk>/recipes/get
+    -H "Content-Type: application/json"
+    -H "Authorization: Bearer <access_token>"
+    
+Response
+
+    [
+        {"title": "Bulgarian Bean Soup"},
+        {"title": "Very big Bulgarian Moussaka"},
+        {"title": "Big Caprice Salad"}
+    ]
+
+### **Get one recipe**
+
+Premium users can get information for one of their recipes
+
+Request method **GET**
+
+    curl http://127.0.0.1:5000/user/<int:pk>/recipes/get
+    -H "Content-Type: application/json"
+    -H "Authorization: Bearer <access_token>"
+    -d "title=Big Caprice Salad"
+
+Response
+
+{
+    "photo_url": "some_created_photo_url",
+    "carbs": 22.81,
+    "created_on": "2023-04-20T10:37:03.059567",
+    "proteins": 48.31,
+    "id": 94,
+    "ingredients": {
+        "tomatoes": 400,
+        "mozzarella": 200,
+        "basil leaves": 12,
+        "olive oil": 30,
+        "balsamic vinegar": 15,
+        "salt": 2
+    },
+    "creator_id": 67,
+    "calories": 953.16,
+    "updated_on": null,
+    "fats": 75.58,
+    "title": "Big Caprice Salad"
+}
+
+### **Update recipe**
+
+Premium users can update their recipes
+
+Request method **PUT**
+
+    curl http://127.0.0.1:5000/user/<int:pk>/recipes/get
+    -H "Content-Type: application/json"
+    -H "Authorization: Bearer <access_token>"
+    -d "title=Big Caprice Salad,
+        &new_title=Very Big Caprice Salad,
+        &ingredients={
+            'tomatoes': 4000,
+            'mozzarella': 2000,
+            'basil leaves': 120,
+            'olive oil': 300,
+            'balsamic vinegar': 150,
+            'salt': 20}"
+            
+Response
+
+    {
+        "photo_url": "some_created_photo_url",
+        "carbs": 228.12,
+        "created_on": "2023-04-20T10:37:03.059567",
+        "proteins": 483.11,
+        "id": 94,
+        "ingredients": {
+            "tomatoes": 4000,
+            "mozzarella": 2000,
+            "basil leaves": 120,
+            "olive oil": 300,
+            "balsamic vinegar": 150,
+            "salt": 20
+        },
+        "creator_id": 67,
+        "calories": 9531.6,
+        "updated_on": "2023-04-20T10:58:10.153839",
+        "fats": 755.77,
+        "title": "Very Big Caprece Salad"
+    }
+
+
+
+
+
 
 ### **Delete recipe**<br>
 

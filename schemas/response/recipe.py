@@ -17,8 +17,8 @@ class ResponseRecipeCreateSchema(RequestRecipeBaseSchema):
 
 
 class ResponseRecipeGetSchema(ResponseRecipeCreateSchema):
-    ingredients = fields.String(required=True)
+    pass
 
 
 class ResponseRecipeUpdateSchema(ResponseRecipeCreateSchema):
-    ingredients = fields.String(required=True)
+    pass

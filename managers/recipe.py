@@ -3,6 +3,7 @@ from werkzeug.exceptions import BadRequest
 from db import db
 from managers.auth import auth
 from models import RecipeModel
+from services.open_ai import OpenAI_Service
 from utils.helpers import count_macronutrients_in_recipe
 
 
@@ -10,6 +11,8 @@ class RecipeManager:
     @staticmethod
     def create_recipe(recipe_data):
         recipe_data = count_macronutrients_in_recipe(recipe_data)
+        open_ai_service = OpenAI_Service()
+        recipe_data["photo_url"] = open_ai_service.create_image(recipe_data["title"])
         recipe = RecipeModel(**recipe_data)
         try:
             db.session.add(recipe)
@@ -67,6 +70,6 @@ class RecipeManager:
             recipe.fats = recipe_data["fats"]
             recipe.carbs = recipe_data["carbs"]
             recipe.calories = recipe_data["calories"]
-        db.session.add(recipe)
+        # db.session.add(recipe)
         db.session.commit()
         return recipe

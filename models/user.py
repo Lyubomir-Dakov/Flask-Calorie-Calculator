@@ -13,12 +13,12 @@ class BaseUserModel(db.Model):
     password = db.Column(db.String(100), nullable=False)
     created_on = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     updated_on = db.Column(db.DateTime, onupdate=func.now())
+    deleted = db.Column(db.Boolean, default=False, nullable=False)
 
 
 class UserModel(BaseUserModel):
     __tablename__ = "users"
     role = db.Column(db.Enum(RoleType), default=RoleType.user, nullable=False)
-    deleted = db.Column(db.Boolean, default=False, nullable=False)
     status = db.Column(db.Enum(UserStatus), default=UserStatus.basic, nullable=False)
 
 

@@ -34,7 +34,7 @@ auth = HTTPTokenAuth(scheme="Bearer")
 def verify_token(token):
     try:
         user_id, user_type = AuthManager.decode_token(token)
-        user = user_mapper(user_type).query.filter_by(id=user_id).first()
+        user = user_mapper(user_type).query.filter_by(id=user_id, deleted=False).first()
         if not user:
             raise Unauthorized("Invalid or missing token")
         return user

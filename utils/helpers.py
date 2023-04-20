@@ -59,7 +59,7 @@ def updated_user_result_message(updated_data):
 
 def count_macronutrients_in_recipe(recipe_data):
     food_service = Edamam_Service()
-    open_ai_service = OpenAI_Service()
+    # open_ai_service = OpenAI_Service()
     proteins = 0
     fats = 0
     carbs = 0
@@ -92,7 +92,7 @@ def count_macronutrients_in_recipe(recipe_data):
             calories += cal
             i += 1
 
-    recipe_data["photo_url"] = open_ai_service.create_image(recipe_data["title"])
+    # recipe_data["photo_url"] = open_ai_service.create_image(recipe_data["title"])
     recipe_data["proteins"] = round(proteins, 2)
     recipe_data["fats"] = round(fats, 2)
     recipe_data["carbs"] = round(carbs, 2)

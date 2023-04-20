@@ -37,7 +37,7 @@ class UserManager:
     def login(login_data):
         try:
             user = UserModel.query.filter_by(email=login_data["email"], deleted=False).first() \
-                   or AdminModel.query.filter_by(email=login_data["email"]).first()
+                   or AdminModel.query.filter_by(email=login_data["email"], deleted=False).first()
 
             if user and check_password_hash(user.password, login_data["password"]):
                 token = AuthManager.encode_token(user)

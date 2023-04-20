@@ -70,6 +70,5 @@ class RecipeManager:
             recipe.fats = recipe_data["fats"]
             recipe.carbs = recipe_data["carbs"]
             recipe.calories = recipe_data["calories"]
-        # db.session.add(recipe)
         db.session.commit()
         return recipe

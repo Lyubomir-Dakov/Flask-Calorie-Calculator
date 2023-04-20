@@ -335,14 +335,87 @@ Request method **DELETE**
 Response status **204**
 
 
+### **Create subscription**
+
+Basic user can subscribe via Paypal to become premium user. In response the user receives from paypal url to approve the subscription. 
+
+Request method **POST**
+
+    curl http://127.0.0.1:5000/subscription/create
+    -H "Content-Type: application/json"
+    -H "Authorization: Bearer <access_token>"
+    
+Response status **201**
+
+    {
+        "subscription_data": {
+            "initial_tax": 3,
+            "subscriber_id": 67,
+            "paypal_id": "I-SUVX4D1UH58F",
+            "status": "active",
+            "created_on": "2023-04-20T05:23:36.666082",
+            "updated_on": null,
+            "monthly_tax": 5,
+            "id": 19,
+            "title": "Premium membership"
+        },
+        "url to approve": "some_url_approve"
+    }
 
 
+### **Pause subscription**
 
-### **Create subscription**<br>
+Premium user can pause his/her subscription and become basic user.
 
-### **Pause subscription**<br>
+Request method **PUT**
 
-### **Activate subscription**<br>
+    curl http://127.0.0.1:5000/subscription/<int:pk>/pause
+    -H "Content-Type: application/json"
+    -H "Authorization: Bearer <access_token>"
+    -d "paypal_id=I-JYCMLT6FJH7J"
+    
+Response status **200**
 
-### **Cancel subscription**<br>
+    {
+        "message": "Subscription with id 'I-JYCMLT6FJH7J' was successfully paused!"
+    }
+
+
+### **Activate subscription**
+
+If a basic user has paused subscription he can activate it.
+
+Request method **PUT**
+
+    curl http://127.0.0.1:5000/subscription/<int:pk>/activate
+    -H "Content-Type: application/json"
+    -H "Authorization: Bearer <access_token>"
+    -d "paypal_id=I-JYCMLT6FJH7J"
+    
+Response status **200**
+
+    {
+        "message": "Subscription with id 'I-JYCMLT6FJH7J' was successfully activated!"
+    }
+    
+
+### **Cancel subscription**
+
+Premium user can cancel his/her subscription. If basic user has paused subscription he/she is allowed to cancel it.
+Once a subscription is canceled it can never be activated again. If the user want to become premium he has to create new subscription and pay again.
+
+Request method **PUT**
+
+    curl http://127.0.0.1:5000/subscription/<int:pk>/cancel
+    -H "Content-Type: application/json"
+    -H "Authorization: Bearer <access_token>"
+    -d "paypal_id=I-JYCMLT6FJH7J"
+    
+Response status **200**
+
+    {
+        "message": "Subscription with id 'I-JYCMLT6FJH7J' was successfully canceled!"
+    }
+
+
 

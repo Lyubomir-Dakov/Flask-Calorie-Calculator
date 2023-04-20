@@ -67,7 +67,7 @@ Request method **POST**
         &password=$#@24vxcvf1%"
         
         
-Response
+Response status **201**
 
     {
         "token": "access_token"
@@ -83,7 +83,7 @@ Request method **POST**
         &password=$#@24vxcvf1%"
         
         
-Response<br>
+Response status **200**
 
     {
         "token": "access_token"
@@ -95,7 +95,7 @@ Every registered user is allowed to update his/her credentials.
 
 Request method **PUT**
 
-    curl http://127.0.0.1:5000/food/advanced_search
+    curl http://127.0.0.1:5000/user/<int:pk>/update
     -H "Content-Type: application/json"
     -H "Authorization: Bearer <access_token>"
     -d "email=i.georgiev@abv.bg
@@ -107,7 +107,7 @@ Request method **PUT**
         &retype_new_password=$#@24vxcvf1%2"
         
         
-Response
+Response status **200**
 
     {
         "message": "You successfully updated your first name, last name, email and password."
@@ -115,7 +115,7 @@ Response
 
 ### **Delete user**
 
-Only the admin is allowed to SOFT deleted a user i.e. to change his/her status deleted=True. If the deleted user has subscription with status active/paused
+Only the admin is allowed to **SOFT** delete a user i.e. to change his/her status deleted=True. If the deleted user has subscription with status active/paused
 the status of the subscription becomes canceled.
 
 Request method **PUT**
@@ -130,7 +130,7 @@ Request method **PUT**
         &new_password=$#@24vxcvf1%2
         &retype_new_password=$#@24vxcvf1%2"
         
-Response
+Response status **200**
 
     {
         "message": "User with id {pk} has been soft deleted successfully"
@@ -146,7 +146,7 @@ Request method **GET**<br>
     -H "Content-Type: application/json"
     -d "title=apple" 
 
-Response
+Response status **200**
     
     {
         "calories_per_100g": 52.0,
@@ -169,7 +169,7 @@ Request method **GET**
     -d "title=apple
         &amount=130"
     
-Response
+Response status **200**
     
     {
         "photo_url": "some_created_photo_url",
@@ -203,7 +203,7 @@ Request method **POST**
             'balsamic vinegar': 15,
             'salt': 2}"
             
-Response
+Response status **201**
 
     {
         "photo_url": "some_created_photo_url",
@@ -237,7 +237,7 @@ Request method **GET**
     -H "Content-Type: application/json"
     -H "Authorization: Bearer <access_token>"
     
-Response
+Response status **200**
 
     [
         {"title": "Bulgarian Bean Soup"},
@@ -251,33 +251,33 @@ Premium users can get information for one of their recipes
 
 Request method **GET**
 
-    curl http://127.0.0.1:5000/user/<int:pk>/recipes/get
+    curl http://127.0.0.1:5000/user/<int:pk>/recipe/get
     -H "Content-Type: application/json"
     -H "Authorization: Bearer <access_token>"
     -d "title=Big Caprice Salad"
 
-Response
+Response status **200**
 
-{
-    "photo_url": "some_created_photo_url",
-    "carbs": 22.81,
-    "created_on": "2023-04-20T10:37:03.059567",
-    "proteins": 48.31,
-    "id": 94,
-    "ingredients": {
-        "tomatoes": 400,
-        "mozzarella": 200,
-        "basil leaves": 12,
-        "olive oil": 30,
-        "balsamic vinegar": 15,
-        "salt": 2
-    },
-    "creator_id": 67,
-    "calories": 953.16,
-    "updated_on": null,
-    "fats": 75.58,
-    "title": "Big Caprice Salad"
-}
+    {
+        "photo_url": "some_created_photo_url",
+        "carbs": 22.81,
+        "created_on": "2023-04-20T10:37:03.059567",
+        "proteins": 48.31,
+        "id": 94,
+        "ingredients": {
+            "tomatoes": 400,
+            "mozzarella": 200,
+            "basil leaves": 12,
+            "olive oil": 30,
+            "balsamic vinegar": 15,
+            "salt": 2
+        },
+        "creator_id": 67,
+        "calories": 953.16,
+        "updated_on": null,
+        "fats": 75.58,
+        "title": "Big Caprice Salad"
+    }
 
 ### **Update recipe**
 
@@ -285,7 +285,7 @@ Premium users can update their recipes
 
 Request method **PUT**
 
-    curl http://127.0.0.1:5000/user/<int:pk>/recipes/get
+    curl http://127.0.0.1:5000/user/<int:pk>/recipe/update
     -H "Content-Type: application/json"
     -H "Authorization: Bearer <access_token>"
     -d "title=Big Caprice Salad,
@@ -298,7 +298,7 @@ Request method **PUT**
             'balsamic vinegar': 150,
             'salt': 20}"
             
-Response
+Response status **200**
 
     {
         "photo_url": "some_created_photo_url",
@@ -320,13 +320,23 @@ Response
         "fats": 755.77,
         "title": "Very Big Caprece Salad"
     }
+    
+### **Delete recipe**
+
+Premium users can delete recipe
+
+Request method **DELETE**
+
+    curl http://127.0.0.1:5000/user/<int:pk>/recipe/delete
+    -H "Content-Type: application/json"
+    -H "Authorization: Bearer <access_token>"
+    -d "title=Very Big Caprece Salad"
+
+Response status **204**
 
 
 
 
-
-
-### **Delete recipe**<br>
 
 ### **Create subscription**<br>
 

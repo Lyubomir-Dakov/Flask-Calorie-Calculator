@@ -1,47 +1,44 @@
 # Flask-Calorie-Calculator
 
-REST API Calorie Calculator application
+## **REST API Calorie Calculator application**
 
-Flask-Calorie-Calculator is a REST API application that allows every user to get information about food - proteins, fats, carbs and calories per 100 grams.
-Food data is taken from EDAMAM nutrition database.
-Registered Users can pay via PayPal for subscription to become premium users.
-As a premium, the users are allowed to advanced search for food with a given amount. 
-Premium users are also able to create their own recipes and the application provides them information about macronutrients for the whole recipe.
-When a user search for food or create recipe, a picture url based on the food title or recipe title is generated through Open AI and returned to the user.
+### **Introduction:**
+Flask-Calorie-Calculator is a REST API application that allows every user to get information about food - proteins, fats, carbs and calories per 100 grams.<br>
+Food data is taken from EDAMAM nutrition database.<br>
+Registered Users can pay via PayPal for subscription to become premium users. The application uses sandbox environment.<br>
+As a premium, the users are allowed to perform advanced search for food with a given amount.<br>
+Premium users are also able to create their own recipes and the application provides them information about macronutrients for the whole recipe.<br>
+When a user search for food or create recipe, a picture url based on the food title or recipe title is generated through Open AI and returned to the user as response.<br>
+The application is built using the Flask web framework and can be run on any Python environment with the required dependencies installed.<br>
 
-The application has integrations with:
-EDAMAM - Leading provider of nutrition data and analytics: https://www.edamam.com/
-PayPal - https://www.paypal.com
-Open AI - https://platform.openai.com/
+### **The application has integrations with:**<br>
+- EDAMAM - Leading provider of nutrition data and analytics: https://www.edamam.com/<br>
+- PayPal - https://www.paypal.com<br>
+- Open AI - https://platform.openai.com/<br>
 
-The application is built using the Flask web framework and can be run on any Python environment with the required dependencies installed.
-
-Install
-
+### **Install:**
 pip install -r requirements.txt
 
-Run the app
+### **Run the app**
+
+- **Windows**<br>
+    Open command prompt terminal<br>
+    set FLASK_APP=./main.py
+
+- **Linux/macOS**<br>
+    export FLASK_APP=main.py
+
+**Run the tests**
 
 Windows
-Open command prompt terminal
-set FLASK_APP=./main.py
+Navigate to the root directory of the application.
+Open the command prompt and execute 'pytest tests/'. This will run all the test cases in the 'tests' directory.
 
-Linux/macOS
-export FLASK_APP=main.py
+**Linux/macOS**
+Navigate to the root directory of the application.
+Open the terminal and execute './run-tests.sh'. This will run all the test cases in the tests directory.
 
-Run the tests
-
-Windows
-
-    Navigate to the root directory of the application.
-    Open the command prompt and execute 'pytest tests/'. This will run all the test cases in the 'tests' directory.
-
-Linux/macOS
-
-    Navigate to the root directory of the application.
-    Open the terminal and execute './run-tests.sh'. This will run all the test cases in the tests directory.
-
-REST API
+**REST API**
 
 The REST API to the Calorie Calculator app is described below.
 

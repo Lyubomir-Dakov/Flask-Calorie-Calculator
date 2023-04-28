@@ -23,10 +23,9 @@ class RecipeManager:
             raise Exception
 
     @staticmethod
-    def get_your_recipes(pk):
-        if not auth.current_user().id == pk:
-            raise BadRequest("You don't have permission to access this resource!")
-        recipes = RecipeModel.query.filter_by(creator_id=pk).all()
+    def get_your_recipes():
+        current_user = auth.current_user()
+        recipes = RecipeModel.query.filter_by(creator_id=current_user.id).all()
         if not recipes:
             raise BadRequest("You still don't have any recipes."
                              " You could create some at 'http://127.0.0.1:5000/recipe'.")
@@ -34,11 +33,12 @@ class RecipeManager:
 
     @staticmethod
     def get_one_recipe(pk, recipe_title):
-        if not auth.current_user().id == pk:
-            raise BadRequest("You don't have permission to access this resource!")
-        recipe = RecipeModel.query.filter_by(title=recipe_title).first()
-        if not recipe:
+        current_user = auth.current_user()
+        recipe = RecipeModel.query.filter_by(id=pk).first()
+        if not recipe or not recipe.title == recipe_title:
             raise BadRequest(f"You don't have a recipe with title '{recipe_title}'!")
+        if not recipe.creator_id == current_user.id:
+            raise BadRequest("You don't have permission to access this resource!")
         return recipe
 
     @staticmethod

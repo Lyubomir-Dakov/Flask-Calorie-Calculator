@@ -28,8 +28,8 @@ class CreateRecipeResource(Resource):
 class GetRecipesResource(Resource):
     @auth.login_required
     @validate_user_status(UserStatus.premium)
-    def get(self, pk):
-        recipes = RecipeManager.get_your_recipes(pk)
+    def get(self):
+        recipes = RecipeManager.get_your_recipes()
         return RequestRecipeBaseSchema().dump(recipes, many=True)
 
 

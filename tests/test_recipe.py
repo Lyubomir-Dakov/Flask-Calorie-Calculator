@@ -124,18 +124,18 @@ class TestRecipe(TestRestAPIBase):
 
         # test to get recipe which starts with lowercase raises
         data = {"title": "incorrect recipe title"}
-        res = self.client.get("/user/1/recipe/get", headers=headers, json=data)
+        res = self.client.get("/recipe/1/get", headers=headers, json=data)
         assert res.status_code == 400
         assert res.json == {"message": {"title": ["The title of every recipe should start with uppercase!"]}}
 
         # test to get invalid recipe raises
         data = {"title": "Incorrect recipe title"}
-        res = self.client.get("/user/1/recipe/get", headers=headers, json=data)
+        res = self.client.get("/recipe/1/get", headers=headers, json=data)
         assert res.status_code == 400
         assert res.json == {"message": "You don't have a recipe with title 'Incorrect recipe title'!"}
 
         # test to get all user's recipes
-        res = self.client.get("/user/1/recipes/get", headers=headers)
+        res = self.client.get("/recipe/get", headers=headers)
         assert res.status_code == 200
         assert res.json == [{"title": "Caprice Salad"}]
 

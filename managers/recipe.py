@@ -34,8 +34,8 @@ class RecipeManager:
     @staticmethod
     def get_one_recipe(pk, recipe_title):
         current_user = auth.current_user()
-        recipe = RecipeModel.query.filter_by(id=pk).first()
-        if not recipe or not recipe.title == recipe_title:
+        recipe = RecipeModel.query.filter_by(id=pk, title=recipe_title).first()
+        if not recipe:
             raise BadRequest(f"You don't have a recipe with title '{recipe_title}'!")
         if not recipe.creator_id == current_user.id:
             raise BadRequest("You don't have permission to access this resource!")
@@ -43,22 +43,24 @@ class RecipeManager:
 
     @staticmethod
     def delete_recipe(pk, recipe_title):
-        if not auth.current_user().id == pk:
-            raise BadRequest("You don't have permission to access this resource!")
-        recipe = RecipeModel.query.filter_by(title=recipe_title).first()
+        current_user = auth.current_user()
+        recipe = RecipeModel.query.filter_by(id=pk, title=recipe_title).first()
         if not recipe:
             raise BadRequest(f"You don't have a recipe with title '{recipe_title}'!")
+        if not current_user.id == recipe.creator_id:
+            raise BadRequest("You don't have permission to access this resource!")
         db.session.delete(recipe)
         db.session.commit()
         return f"You successfully deleted recipe with title '{recipe_title}'"
 
     @staticmethod
     def update_recipe(pk, recipe_data):
-        if not auth.current_user().id == pk:
-            raise BadRequest("You don't have permission to access this resource!")
-        recipe = RecipeModel.query.filter_by(title=recipe_data["title"]).first()
+        current_user = auth.current_user()
+        recipe = RecipeModel.query.filter_by(id=pk, title=recipe_data["title"]).first()
         if not recipe:
             raise BadRequest(f"You don't have a recipe with title '{recipe_data['title']}'!")
+        if not current_user.id == recipe.creator_id:
+            raise BadRequest("You don't have permission to access this resource!")
         if "new_title" not in recipe_data and recipe.get_ingredients() == recipe_data["ingredients"]:
             raise BadRequest("To update this recipe you need to provide different title or change its ingredients.")
         if "new_title" in recipe_data:

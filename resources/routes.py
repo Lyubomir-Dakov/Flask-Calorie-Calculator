@@ -17,8 +17,8 @@ routes = (
     (CreateRecipeResource, "/recipe/create"),
     (GetRecipesResource, "/recipe/get"),
     (GetRecipeResource, "/recipe/<int:pk>/get"),
-    (DeleteRecipeResource, "/user/<int:pk>/recipe/delete"),
-    (UpdateRecipeResource, "/user/<int:pk>/recipe/update"),
+    (DeleteRecipeResource, "/recipe/<int:pk>/delete"),
+    (UpdateRecipeResource, "/recipe/<int:pk>/update"),
 
     (CreateSubscriptionResource, "/subscription/create"),
     (PauseSubscriptionResource, "/subscription/<int:pk>/pause"),

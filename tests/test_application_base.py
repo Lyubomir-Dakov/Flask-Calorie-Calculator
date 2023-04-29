@@ -12,10 +12,10 @@ class TestLoginAndAuthorizationRequired(TestRestAPIBase):
             ("PUT", "/user/1/delete"),
             ("GET", "/food/advanced_search"),
             ("POST", "/recipe/create"),
-            ("GET", "/user/1/recipes/get"),
-            ("GET", "/user/1/recipe/get"),
-            ("DELETE", "/user/1/recipe/delete"),
-            ("PUT", "/user/1/recipe/update"),
+            ("GET", "/recipe/get"),
+            ("GET", "/recipe/1/get"),
+            ("DELETE", "/recipe/1/delete"),
+            ("PUT", "/recipe/1/update"),
             ("POST", "/subscription/create"),
             ("PUT", "/subscription/2/pause"),
             ("PUT", "/subscription/2/activate"),
@@ -67,10 +67,10 @@ class TestLoginAndAuthorizationRequired(TestRestAPIBase):
                    "Content-Type": "application/json"}
         all_guarded_urls = [
             ("POST", "/recipe/create"),
-            ("GET", "/user/1/recipes/get"),
-            ("GET", "/user/1/recipe/get"),
-            ("DELETE", "/user/1/recipe/delete"),
-            ("PUT", "/user/1/recipe/update"),
+            ("GET", "/recipe/get"),
+            ("GET", "/recipe/1/get"),
+            ("DELETE", "/recipe/1/delete"),
+            ("PUT", "/recipe/1/update"),
             ("PUT", "/subscription/2/pause"),
         ]
         for method, url in all_guarded_urls:

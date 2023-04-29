@@ -77,7 +77,7 @@ class TestRecipe(TestRestAPIBase):
 
         # test to get one recipe
         data = {"title": "Caprice Salad"}
-        res = self.client.get("/user/1/recipe/get", headers=headers, json=data)
+        res = self.client.get("/recipe/1/get", headers=headers, json=data)
         assert res.status_code == 200
         assert res.json["updated_on"] is None
 
@@ -94,7 +94,7 @@ class TestRecipe(TestRestAPIBase):
                 "salt": 2
             }
         }
-        res = self.client.put("/user/1/recipe/update", headers=headers, json=data)
+        res = self.client.put("/recipe/1/update", headers=headers, json=data)
         assert res.status_code == 200
         assert res.json["title"] == "Very big Caprice Salad"
         assert res.json["updated_on"] is not None
@@ -141,6 +141,6 @@ class TestRecipe(TestRestAPIBase):
 
         # test delete recipe
         data = {"title": recipe.title}
-        res = self.client.delete("/user/1/recipe/delete", headers=headers, json=data)
+        res = self.client.delete("/recipe/1/delete", headers=headers, json=data)
         assert res.status_code == 204
         assert len(RecipeModel.query.all()) == 0

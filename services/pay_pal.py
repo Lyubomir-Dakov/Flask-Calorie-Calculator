@@ -1,3 +1,5 @@
+import base64
+
 import requests
 from decouple import config
 from werkzeug.exceptions import BadRequest
@@ -8,18 +10,18 @@ class PayPal_Service:
         self.client_id = config("PAY_PAL_CALORIE_CALCULATOR_ID")
         self.secret = config("PAY_PAL_CALORIE_CALCULATOR_SECRET")
         self.base_url = config("PAY_PAL_SANDBOX_BASE_URL")
-        self.get_token_url = config("PAY_PAL_GET_ACCESS_TOKEN_URL")
         self.request_id = config("PAY_PAL_REQUEST_ID")
         self.premium_membership_product_id = config("PAY_PAL_PREMIUM_MEMBERSHIP_PRODUCT_ID")
         self.premium_membership_plan_id = config("PAY_PAL_PREMIUM_MEMBERSHIP_PLAN_ID")
 
     # Token is valid for 9 hours
     def get_access_token(self):
-        get_token_url = self.get_token_url
+
+        get_token_url = f"{self.base_url}/v1/oauth2/token"
         headers = {
             "Accept": "application/json",
             "Accept-Language": "en_US",
-            "Authorization": f"Basic {self.client_id}:{self.secret}"
+            "Authorization": self._get_authorization_header()
         }
         body = {
             "grant_type": "client_credentials",
@@ -33,6 +35,11 @@ class PayPal_Service:
         else:
             raise BadRequest(f"Failed to get access token. Status code: {response.status_code}")
 
+    def _get_authorization_header(self):
+        credentials = f"{self.client_id}:{self.secret}"
+        encoded_credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
+        return f"Basic {encoded_credentials}"
+
     def create_product(self, access_token):
         create_product_url = f"{self.base_url}/v1/catalogs/products"
         headers = {
@@ -42,7 +49,8 @@ class PayPal_Service:
         }
         body = {
             "name": "Calorie Calculator premium membership",
-            "description": "A premium membership subscription for Calorie Calculator app"
+            "description": "A premium membership subscription for Calorie Calculator app",
+            "type": "SERVICE"
         }
         response = requests.post(create_product_url, headers=headers, json=body)
         product_id = response.json()["id"]

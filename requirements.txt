@@ -29,7 +29,7 @@ openai==0.8.0
 packaging==23.0
 password-strength==0.0.3.post2
 pluggy==1.0.0
-psycopg2==2.9.5
+psycopg2-binary==2.9.6
 PyJWT==2.6.0
 pytest==7.3.1
 python-dateutil==2.8.2
